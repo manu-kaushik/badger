@@ -15,7 +15,7 @@ class NotesRepository {
   static const String _colTitle = 'title';
   static const String _colBody = 'body';
 
-  late Database _database;
+  Database? _database;
 
   NotesRepository._internal();
 
@@ -24,13 +24,9 @@ class NotesRepository {
   }
 
   Future<Database> get database async {
-    if (_database != null) {
-      return _database;
-    } else {
-      _database = await _initDatabase();
+    _database ??= await _initDatabase();
 
-      return _database;
-    }
+    return _database!;
   }
 
   Future<Database> _initDatabase() async {

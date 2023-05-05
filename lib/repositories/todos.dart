@@ -16,7 +16,7 @@ class TodosRepository {
   static const String _colCompleted = "completed";
   static const String _colColor = "color";
 
-  late Database _database;
+  Database? _database;
 
   TodosRepository._internal();
 
@@ -25,13 +25,9 @@ class TodosRepository {
   }
 
   Future<Database> get database async {
-    if (_database != null) {
-      return _database;
-    } else {
-      _database = await _initDatabase();
+    _database ??= await _initDatabase();
 
-      return _database;
-    }
+    return _database!;
   }
 
   Future<Database> _initDatabase() async {
