@@ -13,8 +13,12 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+
   sqflite: ^2.2.6
   path: ^1.8.2
+  
+  material_color_generator: ^1.1.0
+  google_fonts: ^4.0.4
 
 dev_dependencies:
   flutter_test:
