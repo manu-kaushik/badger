@@ -12,7 +12,8 @@ class TodosRepository {
 
   static const String _tableName = 'todos';
   static const String _colId = "id";
-  static const String _colText = "text";
+  static const String _colTitle = "title";
+  static const String _colDescription = "description";
   static const String _colCompleted = "completed";
   static const String _colColor = "color";
 
@@ -40,7 +41,8 @@ class TodosRepository {
       await db.execute('''
           CREATE TABLE $_tableName(
             $_colId INTEGER PRIMARY KEY, 
-            $_colText TEXT, 
+            $_colTitle TEXT, 
+            $_colDescription TEXT, 
             $_colCompleted INTEGER, 
             $_colColor TEXT
           )
