@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes/screens/home/home.dart';
+import 'package:notes/screens/notes/manage.dart';
 import 'package:notes/utils/constants.dart';
 import 'package:notes/utils/themes.dart';
 
@@ -14,7 +15,11 @@ class Main extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: appName,
       theme: theme,
-      home: const Home(),
+      routes: {
+        homeRoute: (context) => const Home(),
+        manageNoteRoute: (context) => const ManageNote(),
+      },
+      initialRoute: homeRoute,
     );
   }
 }

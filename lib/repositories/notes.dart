@@ -75,4 +75,12 @@ class NotesRepository {
 
     await db.delete(_tableName, where: '$_colId = ?', whereArgs: [note.id]);
   }
+
+  Future<int> getLastInsertedId() async {
+    final db = await database;
+
+    List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT last_insert_rowid();');
+    return result.isNotEmpty ? result.first.values.first as int : 0;
+  }
 }
