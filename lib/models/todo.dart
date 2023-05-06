@@ -7,16 +7,16 @@ String todoToJson(Todo data) => json.encode(data.toJson());
 class Todo {
   int id;
   String title;
-  String description;
+  String? description;
   bool completed;
-  String color;
+  String? color;
 
   Todo({
     required this.id,
     required this.title,
-    required this.description,
-    required this.completed,
-    required this.color,
+    this.description,
+    this.completed = false,
+    this.color,
   });
 
   factory Todo.fromJson(Map<String, dynamic> json) => Todo(
