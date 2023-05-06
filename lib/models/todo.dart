@@ -34,4 +34,19 @@ class Todo {
         "completed": completed,
         "color": color,
       };
+
+  Todo copyWith({
+    String? title,
+    String? description,
+    bool? completed,
+    String? color,
+  }) {
+    return Todo(
+      id: id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      completed: completed ?? this.completed,
+      color: color ?? this.color,
+    );
+  }
 }
