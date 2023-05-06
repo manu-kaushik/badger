@@ -23,7 +23,7 @@ class Todo {
         id: json["id"],
         title: json["title"],
         description: json["description"],
-        completed: json["completed"],
+        completed: json["completed"] == 1 ? true : false,
         color: json["color"],
       );
 
@@ -31,7 +31,7 @@ class Todo {
         "id": id,
         "title": title,
         "description": description,
-        "completed": completed,
+        "completed": completed ? 1 : 0,
         "color": color,
       };
 
