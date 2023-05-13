@@ -9,7 +9,13 @@ Color colorFromString(String colorString) {
   return Color(colorValue);
 }
 
-SnackBar getSnackBar(String message, {AlertTypes? type}) {
+SnackBar getSnackBar(
+  String message, {
+  AlertTypes? type,
+  SnackBarAction? action,
+  Duration? duration,
+  double? elevation = 0,
+}) {
   MaterialColor getColor() {
     if (type == AlertTypes.success) {
       return Colors.green;
@@ -30,5 +36,8 @@ SnackBar getSnackBar(String message, {AlertTypes? type}) {
       style: TextStyle(color: getColor()),
     ),
     backgroundColor: getColor().shade50,
+    action: action,
+    duration: duration ?? const Duration(milliseconds: 4000),
+    elevation: elevation,
   );
 }
