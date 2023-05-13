@@ -15,10 +15,12 @@ class ManageNote extends StatefulWidget {
 class _ManageNoteState extends State<ManageNote> {
   final _notesRepository = NotesRepository();
 
-  late NotesMangementModes _mode;
+  NotesMangementModes _mode = NotesMangementModes.view;
 
-  final _titleController = TextEditingController();
-  final _bodyController = TextEditingController();
+  late Note _note;
+
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _bodyController = TextEditingController();
 
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _bodyFocusNode = FocusNode();
@@ -37,6 +39,7 @@ class _ManageNoteState extends State<ManageNote> {
   @override
   Widget build(BuildContext context) {
     setMode(context);
+    setNote(context);
 
     return WillPopScope(
       onWillPop: () async {
@@ -44,8 +47,17 @@ class _ManageNoteState extends State<ManageNote> {
           _titleFocusNode.unfocus();
 
           return false;
-        } else if (_bodyFocusNode.hasFocus) {
+        }
+        if (_bodyFocusNode.hasFocus) {
           _bodyFocusNode.unfocus();
+
+          return false;
+        }
+
+        if (_mode != NotesMangementModes.view) {
+          setState(() {
+            _mode = NotesMangementModes.view;
+          });
 
           return false;
         }
@@ -63,19 +75,65 @@ class _ManageNoteState extends State<ManageNote> {
               hintStyle: TextStyle(color: darkColor),
               border: InputBorder.none,
             ),
+            readOnly: _mode == NotesMangementModes.view,
+            onTap: () {
+              if (_mode == NotesMangementModes.view) {
+                setState(() {
+                  _mode = NotesMangementModes.edit;
+                });
+              }
+            },
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.done_rounded),
-              color: primaryColor,
-              onPressed: () {
-                _saveNote(context).then((bool isNoteSaved) {
-                  if (isNoteSaved) {
-                    Navigator.pop(context);
+            Visibility(
+              visible: _mode != NotesMangementModes.view,
+              child: IconButton(
+                icon: getActionIcon(),
+                color: primaryColor,
+                onPressed: () {
+                  if (_mode == NotesMangementModes.add) {
+                    _saveNote(context).then((bool isNoteSaved) {
+                      if (isNoteSaved) {
+                        Navigator.pop(context);
+                      }
+                    });
                   }
-                });
-              },
-            )
+
+                  if (_mode == NotesMangementModes.edit) {
+                    _updateNote(context).then((bool isNoteUpdated) {
+                      if (isNoteUpdated) {
+                        Navigator.pop(context);
+                      }
+                    });
+                  }
+                },
+              ),
+            ),
+            Visibility(
+              visible: _mode == NotesMangementModes.view,
+              child: IconButton(
+                icon: const Icon(Icons.delete_outline_rounded),
+                color: Colors.red,
+                onPressed: () {
+                  if (_mode != NotesMangementModes.add) {
+                    SnackBar snackBar = getSnackBar(
+                      'Are you sure you want to delete this note?',
+                      action: SnackBarAction(
+                          label: 'Delete',
+                          textColor: Colors.red,
+                          onPressed: () {
+                            _notesRepository
+                                .delete(_note)
+                                .then((_) => Navigator.pop(context));
+                          }),
+                      duration: const Duration(seconds: 5),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+            ),
           ],
           backgroundColor: primaryColor.shade50,
           elevation: 0,
@@ -96,22 +154,45 @@ class _ManageNoteState extends State<ManageNote> {
               hintStyle: TextStyle(color: darkColor),
               border: InputBorder.none,
             ),
+            readOnly: _mode == NotesMangementModes.view,
+            onTap: () {
+              if (_mode == NotesMangementModes.view) {
+                setState(() {
+                  _mode = NotesMangementModes.edit;
+                });
+              }
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget? getTitle() => _mode == NotesMangementModes.add
-      ? const Text('Add Note')
-      : _mode == NotesMangementModes.edit
-          ? const Text('Edit Note')
-          : null;
+  Icon getActionIcon() {
+    if (_mode == NotesMangementModes.view) {
+      return const Icon(Icons.edit_rounded);
+    } else {
+      return const Icon(Icons.done_rounded);
+    }
+  }
 
   void setMode(BuildContext context) {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
-    _mode = arguments['mode'];
+    if (_mode != NotesMangementModes.edit) {
+      _mode = arguments['mode'] as NotesMangementModes;
+    }
+  }
+
+  void setNote(BuildContext context) {
+    if (_mode != NotesMangementModes.add) {
+      Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
+
+      _note = arguments['note'] as Note;
+
+      _titleController.text = _note.title;
+      _bodyController.text = _note.body;
+    }
   }
 
   Future<bool> _saveNote(BuildContext context) async {
@@ -143,6 +224,36 @@ class _ManageNoteState extends State<ManageNote> {
       );
 
       await _notesRepository.insert(note);
+
+      return true;
+    }
+  }
+
+  Future<bool> _updateNote(BuildContext context) async {
+    String title = _titleController.text;
+    String body = _bodyController.text;
+
+    if (title == '') {
+      SnackBar snackBar = getSnackBar('Note title cannot be empty');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+      return false;
+    } else if (body == '') {
+      SnackBar snackBar = getSnackBar('Note body cannot be empty');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+      return false;
+    } else {
+      await _notesRepository.update(_note.copyWith(
+        title: title,
+        body: body,
+      ));
 
       return true;
     }

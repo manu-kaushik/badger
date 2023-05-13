@@ -3,6 +3,8 @@ import 'package:notes/models/note.dart';
 import 'package:notes/repositories/notes.dart';
 import 'package:notes/utils/colors.dart';
 
+import '../../../utils/constants.dart';
+
 class NotesTab extends StatefulWidget {
   const NotesTab({Key? key}) : super(key: key);
 
@@ -27,31 +29,43 @@ class _NotesTabState extends State<NotesTab> {
               itemBuilder: (context, index) {
                 final note = notes[index];
 
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  color: primaryColor.shade100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          note.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                return InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      manageNoteRoute,
+                      arguments: {
+                        'mode': NotesMangementModes.view,
+                        'note': note,
+                      },
+                    ).then((_) => setState(() {}));
+                  },
+                  child: Card(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    color: primaryColor.shade100,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            note.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          getShortContent(note.body),
-                          style: const TextStyle(
-                            fontSize: 16,
+                          const SizedBox(height: 8),
+                          Text(
+                            getShortContent(note.body),
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
                           ),
-                          maxLines: 1,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
