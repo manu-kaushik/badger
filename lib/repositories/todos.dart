@@ -62,7 +62,7 @@ class TodosRepository {
     );
   }
 
-  Future<List<Todo>> getAll({Order order = Order.desc}) async {
+  Future<List<Todo>> getAll({Orders order = Orders.desc}) async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query(_tableName);
@@ -71,7 +71,7 @@ class TodosRepository {
       return Todo.fromJson(maps[i]);
     });
 
-    if (order == Order.desc) {
+    if (order == Orders.desc) {
       return todos.reversed.toList();
     } else {
       return todos;

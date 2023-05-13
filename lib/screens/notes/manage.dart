@@ -15,7 +15,7 @@ class ManageNote extends StatefulWidget {
 class _ManageNoteState extends State<ManageNote> {
   final _notesRepository = NotesRepository();
 
-  NotesMangementModes _mode = NotesMangementModes.view;
+  ManagementModes _mode = ManagementModes.view;
 
   late Note _note;
 
@@ -54,9 +54,9 @@ class _ManageNoteState extends State<ManageNote> {
           return false;
         }
 
-        if (_mode == NotesMangementModes.edit) {
+        if (_mode == ManagementModes.edit) {
           setState(() {
-            _mode = NotesMangementModes.view;
+            _mode = ManagementModes.view;
           });
 
           return false;
@@ -77,23 +77,23 @@ class _ManageNoteState extends State<ManageNote> {
               hintStyle: TextStyle(color: darkColor),
               border: InputBorder.none,
             ),
-            readOnly: _mode == NotesMangementModes.view,
+            readOnly: _mode == ManagementModes.view,
             onTap: () {
-              if (_mode == NotesMangementModes.view) {
+              if (_mode == ManagementModes.view) {
                 setState(() {
-                  _mode = NotesMangementModes.edit;
+                  _mode = ManagementModes.edit;
                 });
               }
             },
           ),
           actions: [
             Visibility(
-              visible: _mode != NotesMangementModes.view,
+              visible: _mode != ManagementModes.view,
               child: IconButton(
                 icon: getActionIcon(),
                 color: primaryColor,
                 onPressed: () {
-                  if (_mode == NotesMangementModes.add) {
+                  if (_mode == ManagementModes.add) {
                     _saveNote(context).then((bool isNoteSaved) {
                       if (isNoteSaved) {
                         Navigator.pop(context);
@@ -101,7 +101,7 @@ class _ManageNoteState extends State<ManageNote> {
                     });
                   }
 
-                  if (_mode == NotesMangementModes.edit) {
+                  if (_mode == ManagementModes.edit) {
                     _updateNote(context).then((bool isNoteUpdated) {
                       if (isNoteUpdated) {
                         Navigator.pop(context);
@@ -112,12 +112,12 @@ class _ManageNoteState extends State<ManageNote> {
               ),
             ),
             Visibility(
-              visible: _mode == NotesMangementModes.view,
+              visible: _mode == ManagementModes.view,
               child: IconButton(
                 icon: const Icon(Icons.delete_outline_rounded),
                 color: Colors.red,
                 onPressed: () {
-                  if (_mode != NotesMangementModes.add) {
+                  if (_mode != ManagementModes.add) {
                     SnackBar snackBar = getSnackBar(
                       'Are you sure you want to delete this note?',
                       action: SnackBarAction(
@@ -156,11 +156,11 @@ class _ManageNoteState extends State<ManageNote> {
               hintStyle: TextStyle(color: darkColor),
               border: InputBorder.none,
             ),
-            readOnly: _mode == NotesMangementModes.view,
+            readOnly: _mode == ManagementModes.view,
             onTap: () {
-              if (_mode == NotesMangementModes.view) {
+              if (_mode == ManagementModes.view) {
                 setState(() {
-                  _mode = NotesMangementModes.edit;
+                  _mode = ManagementModes.edit;
                 });
               }
             },
@@ -171,7 +171,7 @@ class _ManageNoteState extends State<ManageNote> {
   }
 
   Icon getActionIcon() {
-    if (_mode == NotesMangementModes.view) {
+    if (_mode == ManagementModes.view) {
       return const Icon(Icons.edit_rounded);
     } else {
       return const Icon(Icons.done_rounded);
@@ -181,13 +181,13 @@ class _ManageNoteState extends State<ManageNote> {
   void setMode(BuildContext context) {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
-    if (_mode != NotesMangementModes.edit) {
-      _mode = arguments['mode'] as NotesMangementModes;
+    if (_mode != ManagementModes.edit) {
+      _mode = arguments['mode'] as ManagementModes;
     }
   }
 
   void setNote(BuildContext context) {
-    if (_mode != NotesMangementModes.add) {
+    if (_mode != ManagementModes.add) {
       Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
       _note = arguments['note'] as Note;

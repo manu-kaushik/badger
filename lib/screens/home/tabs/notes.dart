@@ -35,7 +35,7 @@ class _NotesTabState extends State<NotesTab> {
                       context,
                       manageNoteRoute,
                       arguments: {
-                        'mode': NotesMangementModes.view,
+                        'mode': ManagementModes.view,
                         'note': note,
                       },
                     ).then((_) => setState(() {}));

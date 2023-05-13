@@ -4,8 +4,8 @@ const String appName = 'Notes';
 const String homeRoute = '/home';
 const String manageNoteRoute = '/manage_note';
 
-enum NotesMangementModes { add, edit, view }
+enum ManagementModes { add, view, edit }
 
-enum Order { asc, desc }
+enum Orders { asc, desc }
 
-enum AlertTypes { info, error, warn, success }
+enum AlertTypes { info, success, warn, error }

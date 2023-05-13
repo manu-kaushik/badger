@@ -55,7 +55,7 @@ class NotesRepository {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<Note>> getAll({Order order = Order.desc}) async {
+  Future<List<Note>> getAll({Orders order = Orders.desc}) async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query(_tableName);
@@ -64,7 +64,7 @@ class NotesRepository {
       return Note.fromJson(maps[i]);
     });
 
-    if (order == Order.desc) {
+    if (order == Orders.desc) {
       return notes.reversed.toList();
     } else {
       return notes;

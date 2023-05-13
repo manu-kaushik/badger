@@ -80,7 +80,7 @@ class _HomeState extends State<Home> {
                 context,
                 manageNoteRoute,
                 arguments: {
-                  'mode': NotesMangementModes.add,
+                  'mode': ManagementModes.add,
                 },
               ).then((_) => setState(() {}));
             },
