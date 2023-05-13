@@ -4,6 +4,8 @@ import 'package:notes/models/todo.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../utils/constants.dart';
+
 class TodosRepository {
   static final TodosRepository _singleton = TodosRepository._internal();
 
@@ -60,14 +62,20 @@ class TodosRepository {
     );
   }
 
-  Future<List<Todo>> getAll() async {
+  Future<List<Todo>> getAll({Order order = Order.desc}) async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query(_tableName);
 
-    return List.generate(maps.length, (i) {
+    var todos = List.generate(maps.length, (i) {
       return Todo.fromJson(maps[i]);
     });
+
+    if (order == Order.desc) {
+      return todos.reversed.toList();
+    } else {
+      return todos;
+    }
   }
 
   Future<void> update(Todo todo) async {

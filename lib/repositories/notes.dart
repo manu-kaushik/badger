@@ -4,6 +4,8 @@ import 'package:notes/models/note.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../utils/constants.dart';
+
 class NotesRepository {
   static final NotesRepository _singleton = NotesRepository._internal();
 
@@ -53,14 +55,20 @@ class NotesRepository {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<Note>> getAll() async {
+  Future<List<Note>> getAll({Order order = Order.desc}) async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query(_tableName);
 
-    return List.generate(maps.length, (i) {
+    var notes = List.generate(maps.length, (i) {
       return Note.fromJson(maps[i]);
     });
+
+    if (order == Order.desc) {
+      return notes.reversed.toList();
+    } else {
+      return notes;
+    }
   }
 
   Future<void> update(Note note) async {
