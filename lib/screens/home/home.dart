@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:notes/screens/home/tabs/notes_tab.dart';
-import 'package:notes/screens/home/tabs/todos_tab.dart';
+import 'package:notes/screens/home/tabs/notes.dart';
+import 'package:notes/screens/home/tabs/todos.dart';
 import 'package:notes/utils/colors.dart';
 import 'package:notes/utils/constants.dart';
 
@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
                 arguments: {
                   'mode': NotesMangementModes.add,
                 },
-              ).then((value) => setState(() {}));
+              ).then((_) => setState(() {}));
             },
             backgroundColor: primaryColor,
             elevation: 0,
