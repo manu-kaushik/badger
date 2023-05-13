@@ -95,6 +95,20 @@ class _NotesTabState extends State<NotesTab> {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            manageNoteRoute,
+            arguments: {
+              'mode': ManagementModes.add,
+            },
+          ).then((_) => setState(() {}));
+        },
+        backgroundColor: primaryColor,
+        elevation: 0,
+        child: const Icon(Icons.edit_note),
+      ),
     );
   }
 

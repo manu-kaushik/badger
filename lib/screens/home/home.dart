@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:notes/screens/home/tabs/notes.dart';
 import 'package:notes/screens/home/tabs/todos.dart';
 import 'package:notes/utils/colors.dart';
-import 'package:notes/utils/constants.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -68,32 +67,7 @@ class _HomeState extends State<Home> {
         iconSize: 28,
         selectedIconTheme: const IconThemeData(size: 32),
       ),
-      floatingActionButton: getFab(context),
     );
-  }
-
-  FloatingActionButton getFab(BuildContext context) {
-    return _currentIndex == 0
-        ? FloatingActionButton.small(
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                manageNoteRoute,
-                arguments: {
-                  'mode': ManagementModes.add,
-                },
-              ).then((_) => setState(() {}));
-            },
-            backgroundColor: primaryColor,
-            elevation: 0,
-            child: const Icon(Icons.edit_note),
-          )
-        : FloatingActionButton.small(
-            onPressed: () {},
-            backgroundColor: secondaryColor,
-            elevation: 0,
-            child: const Icon(Icons.add_task),
-          );
   }
 
   MaterialColor getCurrentTabColor() =>
