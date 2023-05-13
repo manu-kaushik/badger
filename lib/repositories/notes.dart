@@ -80,7 +80,11 @@ class NotesRepository {
     final db = await database;
 
     List<Map<String, dynamic>> result =
-        await db.rawQuery('SELECT last_insert_rowid();');
-    return result.isNotEmpty ? result.first.values.first as int : 0;
+        await db.rawQuery('SELECT MAX(id) FROM $_tableName;');
+
+    int lastInsertedId =
+        result.isNotEmpty ? result.first.values.first as int : 0;
+
+    return lastInsertedId;
   }
 }
