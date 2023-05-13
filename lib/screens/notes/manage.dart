@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:notes/models/note.dart';
 import 'package:notes/repositories/notes.dart';
+import 'package:notes/utils/colors.dart';
 import 'package:notes/utils/constants.dart';
+import 'package:notes/utils/functions.dart';
 
 class ManageNote extends StatefulWidget {
   const ManageNote({Key? key}) : super(key: key);
@@ -11,78 +13,89 @@ class ManageNote extends StatefulWidget {
 }
 
 class _ManageNoteState extends State<ManageNote> {
-  final _formKey = GlobalKey<FormState>();
+  final _notesRepository = NotesRepository();
+
+  late NotesMangementModes _mode;
+
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
 
-  final _notesRepository = NotesRepository();
+  final FocusNode _titleFocusNode = FocusNode();
+  final FocusNode _bodyFocusNode = FocusNode();
 
-  Future<void> _saveNote() async {
-    int id = await _notesRepository.getLastInsertedId() + 1;
-    String title = _titleController.text;
-    String body = _bodyController.text;
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _bodyController.dispose();
 
-    if (_formKey.currentState!.validate()) {
-      final note = Note(
-        id: id,
-        title: title,
-        body: body,
-      );
+    _titleFocusNode.dispose();
+    _bodyFocusNode.dispose();
 
-      await _notesRepository.insert(note);
-    }
+    super.dispose();
   }
-
-  late NotesMangementModes _mode;
 
   @override
   Widget build(BuildContext context) {
     setMode(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: getTitle(),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {
-              _saveNote().then((_) {
-                Navigator.pop(context);
-              });
-            },
-          )
-        ],
-      ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
+    return WillPopScope(
+      onWillPop: () async {
+        if (_titleFocusNode.hasFocus) {
+          _titleFocusNode.unfocus();
+
+          return false;
+        } else if (_bodyFocusNode.hasFocus) {
+          _bodyFocusNode.unfocus();
+
+          return false;
+        }
+
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: TextField(
+            controller: _titleController,
+            focusNode: _titleFocusNode,
+            decoration: InputDecoration(
+              hintText: 'Enter a title',
+              hintStyle: TextStyle(color: darkColor),
+              border: InputBorder.none,
+            ),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.done_rounded),
+              color: primaryColor,
+              onPressed: () {
+                _saveNote(context).then((bool isNoteSaved) {
+                  if (isNoteSaved) {
+                    Navigator.pop(context);
                   }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _bodyController,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  labelText: 'Content',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
+                });
+              },
+            )
+          ],
+          backgroundColor: primaryColor.shade50,
+          elevation: 0,
+          iconTheme: IconThemeData(color: primaryColor),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8.0,
+            horizontal: 16.0,
+          ),
+          child: TextField(
+            controller: _bodyController,
+            focusNode: _bodyFocusNode,
+            maxLines: null,
+            expands: true,
+            decoration: InputDecoration(
+              hintText: 'Start writing here...',
+              hintStyle: TextStyle(color: darkColor),
+              border: InputBorder.none,
+            ),
           ),
         ),
       ),
@@ -99,5 +112,39 @@ class _ManageNoteState extends State<ManageNote> {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
     _mode = arguments['mode'];
+  }
+
+  Future<bool> _saveNote(BuildContext context) async {
+    int id = await _notesRepository.getLastInsertedId() + 1;
+    String title = _titleController.text;
+    String body = _bodyController.text;
+
+    if (title == '') {
+      SnackBar snackBar = getSnackBar('Note title cannot be empty');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+      return false;
+    } else if (body == '') {
+      SnackBar snackBar = getSnackBar('Note body cannot be empty');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+      return false;
+    } else {
+      final note = Note(
+        id: id,
+        title: title,
+        body: body,
+      );
+
+      await _notesRepository.insert(note);
+
+      return true;
+    }
   }
 }
