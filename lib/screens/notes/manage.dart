@@ -54,13 +54,15 @@ class _ManageNoteState extends State<ManageNote> {
           return false;
         }
 
-        if (_mode != NotesMangementModes.view) {
+        if (_mode == NotesMangementModes.edit) {
           setState(() {
             _mode = NotesMangementModes.view;
           });
 
           return false;
         }
+
+        ScaffoldMessenger.of(context).clearSnackBars();
 
         return true;
       },
