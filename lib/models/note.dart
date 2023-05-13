@@ -26,4 +26,15 @@ class Note {
         "title": title,
         "body": body,
       };
+
+  Note copyWith({
+    String? title,
+    String? body,
+  }) {
+    return Note(
+      id: id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+    );
+  }
 }
