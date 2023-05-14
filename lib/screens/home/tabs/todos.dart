@@ -35,6 +35,16 @@ class _TodosTabState extends State<TodosTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Todos',
+          style: TextStyle(
+            color: secondaryColor,
+          ),
+        ),
+        backgroundColor: secondaryColor.shade50,
+        elevation: 0,
+      ),
       body: FutureBuilder<List<Todo>>(
         future: _todosRepository.getAll(order: Orders.asc),
         builder: (context, snapshot) {

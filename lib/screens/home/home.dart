@@ -29,16 +29,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          getCurrentTabTitle(),
-          style: TextStyle(
-            color: getCurrentTabColor(),
-          ),
-        ),
-        backgroundColor: getCurrentTabColor().shade50,
-        elevation: 0,
-      ),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
@@ -72,6 +62,4 @@ class _HomeState extends State<Home> {
 
   MaterialColor getCurrentTabColor() =>
       _currentIndex == 0 ? primaryColor : secondaryColor;
-
-  String getCurrentTabTitle() => _currentIndex == 0 ? 'Notes' : 'Todos';
 }

@@ -18,6 +18,16 @@ class _NotesTabState extends State<NotesTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Notes',
+          style: TextStyle(
+            color: primaryColor,
+          ),
+        ),
+        backgroundColor: primaryColor.shade50,
+        elevation: 0,
+      ),
       body: FutureBuilder<List<Note>>(
         future: _notesRepository.getAll(),
         builder: (context, snapshot) {
