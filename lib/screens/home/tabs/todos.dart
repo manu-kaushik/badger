@@ -35,6 +35,7 @@ class _TodosTabState extends State<TodosTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Todos',
@@ -44,6 +45,30 @@ class _TodosTabState extends State<TodosTab> {
         ),
         backgroundColor: secondaryColor.shade50,
         elevation: 0,
+        actions: [
+          PopupMenuButton<String>(
+            offset: const Offset(0, kToolbarHeight + 8),
+            icon: Icon(
+              Icons.more_vert,
+              color: secondaryColor, // Set the desired color here
+            ),
+            elevation: 0,
+            color: secondaryColor.shade50,
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'clearCompleted',
+                child: Text('Clear Completed'),
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 'clearCompleted') {
+                _todosRepository.deleteCompletedTodos();
+
+                setState(() {});
+              }
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Todo>>(
         future: _todosRepository.getAll(order: Orders.asc),
@@ -81,6 +106,8 @@ class _TodosTabState extends State<TodosTab> {
                           setState(() {
                             _mode = ManagementModes.view;
                           });
+
+                          _todoController.clear();
                         } else {
                           SnackBar snackBar =
                               getSnackBar('Todo cannot be empty');

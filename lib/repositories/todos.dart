@@ -110,4 +110,14 @@ class TodosRepository {
 
     return lastInsertedId;
   }
+
+  Future<void> deleteCompletedTodos() async {
+    final db = await database;
+
+    await db.delete(
+      _tableName,
+      where: 'completed = ?',
+      whereArgs: [true],
+    );
+  }
 }
