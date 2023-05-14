@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:markdown/markdown.dart';
 import 'package:notes/models/note.dart';
 import 'package:notes/repositories/notes.dart';
 import 'package:notes/utils/colors.dart';
@@ -143,28 +145,40 @@ class _ManageNoteState extends State<ManageNote> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 8.0,
-            horizontal: 16.0,
+            vertical: 16.0,
+            horizontal: 24.0,
           ),
-          child: TextField(
-            controller: _bodyController,
-            focusNode: _bodyFocusNode,
-            maxLines: null,
-            expands: true,
-            decoration: InputDecoration(
-              hintText: 'Start writing here...',
-              hintStyle: TextStyle(color: darkColor),
-              border: InputBorder.none,
-            ),
-            readOnly: _mode == ManagementModes.view,
-            onTap: () {
-              if (_mode == ManagementModes.view) {
-                setState(() {
-                  _mode = ManagementModes.edit;
-                });
-              }
-            },
-          ),
+          child: _mode == ManagementModes.view
+              ? GestureDetector(
+                  onTap: () {
+                    if (_mode == ManagementModes.view) {
+                      setState(() {
+                        _mode = ManagementModes.edit;
+                      });
+                    }
+                  },
+                  child: MarkdownBody(
+                    data: _note.body,
+                    extensionSet: ExtensionSet(
+                      ExtensionSet.gitHubFlavored.blockSyntaxes,
+                      [
+                        EmojiSyntax(),
+                        ...ExtensionSet.gitHubFlavored.inlineSyntaxes,
+                      ],
+                    ),
+                  ),
+                )
+              : TextField(
+                  controller: _bodyController,
+                  focusNode: _bodyFocusNode,
+                  maxLines: null,
+                  expands: true,
+                  decoration: InputDecoration(
+                    hintText: 'Start writing here...',
+                    hintStyle: TextStyle(color: darkColor),
+                    border: InputBorder.none,
+                  ),
+                ),
         ),
       ),
     );
