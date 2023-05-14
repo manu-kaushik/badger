@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:notes/screens/home/home.dart';
-import 'package:notes/screens/notes/manage.dart';
-import 'package:notes/utils/constants.dart';
-import 'package:notes/utils/local_storage.dart';
-import 'package:notes/utils/themes.dart';
+import 'package:badger/screens/home/home.dart';
+import 'package:badger/screens/notes/manage.dart';
+import 'package:badger/utils/constants.dart';
+import 'package:badger/utils/local_storage.dart';
+import 'package:badger/utils/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

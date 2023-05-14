@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:notes/models/todo.dart';
+import 'package:badger/models/todo.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:notes/utils/constants.dart';
+import 'package:badger/utils/constants.dart';
 
 class TodosRepository {
   static final TodosRepository _singleton = TodosRepository._internal();

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.notes">
+    package="com.manukaushik.badger">
    <application
-        android:label="Notes"
+        android:label="Badger: Notes & Todos"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

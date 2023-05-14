@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart';
-import 'package:notes/models/note.dart';
-import 'package:notes/repositories/notes.dart';
-import 'package:notes/utils/colors.dart';
-import 'package:notes/utils/constants.dart';
-import 'package:notes/utils/functions.dart';
+import 'package:badger/models/note.dart';
+import 'package:badger/repositories/notes.dart';
+import 'package:badger/utils/colors.dart';
+import 'package:badger/utils/constants.dart';
+import 'package:badger/utils/functions.dart';
 
 class ManageNote extends StatefulWidget {
   const ManageNote({Key? key}) : super(key: key);

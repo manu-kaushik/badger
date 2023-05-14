@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:notes/models/note.dart';
-import 'package:notes/repositories/notes.dart';
-import 'package:notes/utils/colors.dart';
+import 'package:badger/models/note.dart';
+import 'package:badger/repositories/notes.dart';
+import 'package:badger/utils/colors.dart';
 
-import 'package:notes/utils/constants.dart';
+import 'package:badger/utils/constants.dart';
 
 class NotesTab extends StatefulWidget {
   const NotesTab({Key? key}) : super(key: key);

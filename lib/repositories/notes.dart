@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:notes/models/note.dart';
+import 'package:badger/models/note.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:notes/utils/constants.dart';
+import 'package:badger/utils/constants.dart';
 
 class NotesRepository {
   static final NotesRepository _singleton = NotesRepository._internal();

@@ -1,4 +1,4 @@
-package com.example.notes
+package com.manukaushik.badger
 
 import io.flutter.embedding.android.FlutterActivity
 

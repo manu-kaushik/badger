@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:notes/screens/home/tabs/notes.dart';
-import 'package:notes/screens/home/tabs/todos.dart';
-import 'package:notes/utils/colors.dart';
-import 'package:notes/utils/local_storage.dart';
+import 'package:badger/screens/home/tabs/notes.dart';
+import 'package:badger/screens/home/tabs/todos.dart';
+import 'package:badger/utils/colors.dart';
+import 'package:badger/utils/local_storage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

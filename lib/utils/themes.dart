@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notes/utils/colors.dart';
+import 'package:badger/utils/colors.dart';
 
 ThemeData theme = ThemeData(
   primaryColor: notesThemeColor,

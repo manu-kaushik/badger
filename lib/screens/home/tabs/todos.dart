@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:notes/models/todo.dart';
-import 'package:notes/repositories/todos.dart';
-import 'package:notes/utils/colors.dart';
-import 'package:notes/utils/constants.dart';
-import 'package:notes/utils/functions.dart';
+import 'package:badger/models/todo.dart';
+import 'package:badger/repositories/todos.dart';
+import 'package:badger/utils/colors.dart';
+import 'package:badger/utils/constants.dart';
+import 'package:badger/utils/functions.dart';
 
 class TodosTab extends StatefulWidget {
   const TodosTab({Key? key}) : super(key: key);
