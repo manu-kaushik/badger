@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:notes/screens/home/tabs/notes.dart';
 import 'package:notes/screens/home/tabs/todos.dart';
 import 'package:notes/utils/colors.dart';
+import 'package:notes/utils/local_storage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,6 +13,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final LocalStorage _localStorage = LocalStorage();
+
   int _currentIndex = 0;
 
   final List<Widget> _children = [
@@ -19,14 +22,16 @@ class _HomeState extends State<Home> {
     const TodosTab(),
   ];
 
+  final String _currentIndexKey = 'currentHomeTabIndex';
+
   void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    _localStorage.setInt(_currentIndexKey, index);
   }
 
   @override
   Widget build(BuildContext context) {
+    setCurrentIndex();
+
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -61,4 +66,10 @@ class _HomeState extends State<Home> {
 
   MaterialColor getCurrentTabColor() =>
       _currentIndex == 0 ? notesThemeColor : todosThemeColor;
+
+  void setCurrentIndex() async {
+    _currentIndex = await _localStorage.getInt(_currentIndexKey);
+
+    setState(() {});
+  }
 }

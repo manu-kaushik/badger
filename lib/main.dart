@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:notes/screens/home/home.dart';
 import 'package:notes/screens/notes/manage.dart';
 import 'package:notes/utils/constants.dart';
+import 'package:notes/utils/local_storage.dart';
 import 'package:notes/utils/themes.dart';
 
-void main() => runApp(const Main());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await LocalStorage().initialize();
+
+  runApp(const Main());
+}
 
 class Main extends StatelessWidget {
   const Main({super.key});
