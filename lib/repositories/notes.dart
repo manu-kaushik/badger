@@ -4,7 +4,7 @@ import 'package:notes/models/note.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../utils/constants.dart';
+import 'package:notes/utils/constants.dart';
 
 class NotesRepository {
   static final NotesRepository _singleton = NotesRepository._internal();

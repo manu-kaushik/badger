@@ -40,20 +40,20 @@ class _TodosTabState extends State<TodosTab> {
         title: Text(
           'Todos',
           style: TextStyle(
-            color: secondaryColor,
+            color: todosThemeColor,
           ),
         ),
-        backgroundColor: secondaryColor.shade50,
+        backgroundColor: todosThemeColor.shade50,
         elevation: 0,
         actions: [
           PopupMenuButton<String>(
             offset: const Offset(0, kToolbarHeight + 8),
             icon: Icon(
               Icons.more_vert,
-              color: secondaryColor, // Set the desired color here
+              color: todosThemeColor, // Set the desired color here
             ),
             elevation: 0,
-            color: secondaryColor.shade50,
+            color: todosThemeColor.shade50,
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'clearCompleted',
@@ -151,7 +151,7 @@ class _TodosTabState extends State<TodosTab> {
           } else {
             return Center(
               child: CircularProgressIndicator(
-                color: secondaryColor,
+                color: todosThemeColor,
                 strokeWidth: 1,
               ),
             );
@@ -166,7 +166,7 @@ class _TodosTabState extends State<TodosTab> {
               _mode = ManagementModes.add;
             });
           },
-          backgroundColor: secondaryColor,
+          backgroundColor: todosThemeColor,
           elevation: 0,
           child: const Icon(Icons.add_task),
         ),

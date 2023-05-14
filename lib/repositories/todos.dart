@@ -4,7 +4,7 @@ import 'package:notes/models/todo.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../utils/constants.dart';
+import 'package:notes/utils/constants.dart';
 
 class TodosRepository {
   static final TodosRepository _singleton = TodosRepository._internal();

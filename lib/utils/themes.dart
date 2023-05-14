@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/utils/colors.dart';
 
 ThemeData theme = ThemeData(
-  primaryColor: primaryColor,
-  primarySwatch: primaryColor,
+  primaryColor: notesThemeColor,
+  primarySwatch: notesThemeColor,
   fontFamily: GoogleFonts.quicksand(fontWeight: FontWeight.w500).fontFamily,
 );

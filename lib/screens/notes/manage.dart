@@ -91,7 +91,7 @@ class _ManageNoteState extends State<ManageNote> {
               visible: _mode != ManagementModes.view,
               child: IconButton(
                 icon: getActionIcon(),
-                color: primaryColor,
+                color: notesThemeColor,
                 onPressed: () {
                   if (_mode == ManagementModes.add) {
                     _saveNote(context).then((bool isNoteSaved) {
@@ -137,9 +137,9 @@ class _ManageNoteState extends State<ManageNote> {
               ),
             ),
           ],
-          backgroundColor: primaryColor.shade50,
+          backgroundColor: notesThemeColor.shade50,
           elevation: 0,
-          iconTheme: IconThemeData(color: primaryColor),
+          iconTheme: IconThemeData(color: notesThemeColor),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(

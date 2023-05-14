@@ -28,7 +28,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
@@ -61,5 +60,5 @@ class _HomeState extends State<Home> {
   }
 
   MaterialColor getCurrentTabColor() =>
-      _currentIndex == 0 ? primaryColor : secondaryColor;
+      _currentIndex == 0 ? notesThemeColor : todosThemeColor;
 }

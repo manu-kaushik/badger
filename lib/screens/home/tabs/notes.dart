@@ -3,7 +3,7 @@ import 'package:notes/models/note.dart';
 import 'package:notes/repositories/notes.dart';
 import 'package:notes/utils/colors.dart';
 
-import '../../../utils/constants.dart';
+import 'package:notes/utils/constants.dart';
 
 class NotesTab extends StatefulWidget {
   const NotesTab({Key? key}) : super(key: key);
@@ -18,14 +18,15 @@ class _NotesTabState extends State<NotesTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Notes',
           style: TextStyle(
-            color: primaryColor,
+            color: notesThemeColor,
           ),
         ),
-        backgroundColor: primaryColor.shade50,
+        backgroundColor: notesThemeColor.shade50,
         elevation: 0,
       ),
       body: FutureBuilder<List<Note>>(
@@ -53,7 +54,7 @@ class _NotesTabState extends State<NotesTab> {
                   child: Card(
                     margin:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    color: primaryColor.shade100,
+                    color: notesThemeColor.shade100,
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -98,7 +99,7 @@ class _NotesTabState extends State<NotesTab> {
           } else {
             return Center(
               child: CircularProgressIndicator(
-                color: primaryColor,
+                color: notesThemeColor,
                 strokeWidth: 1,
               ),
             );
@@ -115,7 +116,7 @@ class _NotesTabState extends State<NotesTab> {
             },
           ).then((_) => setState(() {}));
         },
-        backgroundColor: primaryColor,
+        backgroundColor: notesThemeColor,
         elevation: 0,
         child: const Icon(Icons.edit_note),
       ),
