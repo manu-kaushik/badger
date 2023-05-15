@@ -34,6 +34,29 @@ class _NotesTabState extends State<NotesTab> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final notes = snapshot.data!;
+
+            if (notes.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.note,
+                      color: darkColor.shade400,
+                      size: 48.0,
+                    ),
+                    const SizedBox(
+                      height: 16.0,
+                    ),
+                    Text(
+                      'No notes yet! Try adding one!',
+                      style: TextStyle(color: darkColor),
+                    ),
+                  ],
+                ),
+              );
+            }
+
             return ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
               itemCount: notes.length,
@@ -86,13 +109,6 @@ class _NotesTabState extends State<NotesTab> {
             return Center(
               child: Text(
                 'Something went wrong!',
-                style: TextStyle(color: darkColor),
-              ),
-            );
-          } else if (!snapshot.hasData) {
-            return Center(
-              child: Text(
-                'No notes yet! Try adding one!',
                 style: TextStyle(color: darkColor),
               ),
             );

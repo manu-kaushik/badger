@@ -76,6 +76,28 @@ class _TodosTabState extends State<TodosTab> {
           if (snapshot.hasData) {
             final todos = snapshot.data!;
 
+            if (todos.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.view_list_rounded,
+                      color: darkColor.shade400,
+                      size: 48.0,
+                    ),
+                    const SizedBox(
+                      height: 16.0,
+                    ),
+                    Text(
+                      'No todos yet! Try adding one!',
+                      style: TextStyle(color: darkColor),
+                    ),
+                  ],
+                ),
+              );
+            }
+
             return ListView.builder(
               itemCount: _mode == ManagementModes.add
                   ? todos.length + 1
@@ -138,13 +160,6 @@ class _TodosTabState extends State<TodosTab> {
             return Center(
               child: Text(
                 'Something went wrong!',
-                style: TextStyle(color: darkColor),
-              ),
-            );
-          } else if (!snapshot.hasData) {
-            return Center(
-              child: Text(
-                'No todos yet! Try adding one!',
                 style: TextStyle(color: darkColor),
               ),
             );
