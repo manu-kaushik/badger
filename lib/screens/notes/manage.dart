@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart';
@@ -110,6 +111,28 @@ class _ManageNoteState extends State<ManageNote> {
                       }
                     });
                   }
+                },
+              ),
+            ),
+            Visibility(
+              visible: _mode == ManagementModes.view,
+              child: IconButton(
+                icon: const Icon(Icons.copy),
+                color: notesThemeColor,
+                onPressed: () {
+                  FlutterClipboard.copy(_note.body).then((_) {
+                    SnackBar snackBar =
+                        getSnackBar('Copied note body to clipboard');
+
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }).catchError((_) {
+                    SnackBar snackBar = getSnackBar(
+                      'Something went wrong!',
+                      type: AlertTypes.error,
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  });
                 },
               ),
             ),
