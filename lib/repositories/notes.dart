@@ -90,9 +90,9 @@ class NotesRepository {
     List<Map<String, dynamic>> result =
         await db.rawQuery('SELECT MAX(id) FROM $_tableName;');
 
-    int lastInsertedId =
-        result.isNotEmpty ? result.first.values.first as int : 0;
+    int? lastInsertedId =
+        result.isNotEmpty ? result.first.values.first as int? : null;
 
-    return lastInsertedId;
+    return lastInsertedId ?? 0;
   }
 }
