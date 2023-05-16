@@ -122,7 +122,7 @@ class _NotesTabState extends State<NotesTab> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton.small(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(
             context,

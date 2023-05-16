@@ -175,7 +175,7 @@ class _TodosTabState extends State<TodosTab> {
       ),
       floatingActionButton: Visibility(
         visible: _mode == ManagementModes.view,
-        child: FloatingActionButton.small(
+        child: FloatingActionButton(
           onPressed: () {
             setState(() {
               _mode = ManagementModes.add;
