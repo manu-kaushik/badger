@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.note,
-              color: getCurrentTabColor(),
+              color: themeColor,
             ),
             label: 'Notes',
             tooltip: 'Notes',
@@ -49,13 +49,13 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.checklist_rounded,
-              color: getCurrentTabColor(),
+              color: themeColor,
             ),
             label: 'Todos',
             tooltip: 'Todos',
           ),
         ],
-        backgroundColor: getCurrentTabColor().shade50,
+        backgroundColor: themeColor.shade50,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         iconSize: 28,
@@ -63,9 +63,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-  MaterialColor getCurrentTabColor() =>
-      _currentIndex == 0 ? notesThemeColor : todosThemeColor;
 
   void setCurrentIndex() async {
     _currentIndex = await _localStorage.getInt(_currentIndexKey);

@@ -23,10 +23,10 @@ class _NotesTabState extends State<NotesTab> {
         title: Text(
           'Notes',
           style: TextStyle(
-            color: notesThemeColor,
+            color: themeColor,
           ),
         ),
-        backgroundColor: notesThemeColor.shade50,
+        backgroundColor: themeColor.shade50,
         elevation: 0,
       ),
       body: FutureBuilder<List<Note>>(
@@ -42,7 +42,7 @@ class _NotesTabState extends State<NotesTab> {
                   children: [
                     Icon(
                       Icons.note,
-                      color: darkColor.shade400,
+                      color: themeColor.shade400,
                       size: 48.0,
                     ),
                     const SizedBox(
@@ -50,7 +50,7 @@ class _NotesTabState extends State<NotesTab> {
                     ),
                     Text(
                       'No notes yet! Try adding one!',
-                      style: TextStyle(color: darkColor),
+                      style: TextStyle(color: themeColor),
                     ),
                   ],
                 ),
@@ -77,7 +77,7 @@ class _NotesTabState extends State<NotesTab> {
                   child: Card(
                     margin:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    color: notesThemeColor.shade100,
+                    color: themeColor.shade100,
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -109,13 +109,13 @@ class _NotesTabState extends State<NotesTab> {
             return Center(
               child: Text(
                 'Something went wrong!',
-                style: TextStyle(color: darkColor),
+                style: TextStyle(color: themeColor),
               ),
             );
           } else {
             return Center(
               child: CircularProgressIndicator(
-                color: notesThemeColor,
+                color: themeColor,
                 strokeWidth: 1,
               ),
             );
@@ -132,7 +132,7 @@ class _NotesTabState extends State<NotesTab> {
             },
           ).then((_) => setState(() {}));
         },
-        backgroundColor: notesThemeColor,
+        backgroundColor: themeColor,
         elevation: 0,
         child: const Icon(Icons.edit_note),
       ),

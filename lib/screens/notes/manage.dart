@@ -77,7 +77,7 @@ class _ManageNoteState extends State<ManageNote> {
             focusNode: _titleFocusNode,
             decoration: InputDecoration(
               hintText: 'Enter a title',
-              hintStyle: TextStyle(color: darkColor),
+              hintStyle: TextStyle(color: themeColor),
               border: InputBorder.none,
             ),
             readOnly: _mode == ManagementModes.view,
@@ -94,7 +94,7 @@ class _ManageNoteState extends State<ManageNote> {
               visible: _mode != ManagementModes.view,
               child: IconButton(
                 icon: getActionIcon(),
-                color: notesThemeColor,
+                color: themeColor,
                 onPressed: () {
                   if (_mode == ManagementModes.add) {
                     _saveNote(context).then((bool isNoteSaved) {
@@ -118,7 +118,7 @@ class _ManageNoteState extends State<ManageNote> {
               visible: _mode == ManagementModes.view,
               child: IconButton(
                 icon: const Icon(Icons.copy),
-                color: notesThemeColor,
+                color: themeColor,
                 onPressed: () {
                   FlutterClipboard.copy(_note.body).then((_) {
                     SnackBar snackBar =
@@ -162,9 +162,9 @@ class _ManageNoteState extends State<ManageNote> {
               ),
             ),
           ],
-          backgroundColor: notesThemeColor.shade50,
+          backgroundColor: themeColor.shade50,
           elevation: 0,
-          iconTheme: IconThemeData(color: notesThemeColor),
+          iconTheme: IconThemeData(color: themeColor),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(
@@ -198,7 +198,7 @@ class _ManageNoteState extends State<ManageNote> {
                   expands: true,
                   decoration: InputDecoration(
                     hintText: 'Start writing here...',
-                    hintStyle: TextStyle(color: darkColor),
+                    hintStyle: TextStyle(color: themeColor),
                     border: InputBorder.none,
                   ),
                 ),
