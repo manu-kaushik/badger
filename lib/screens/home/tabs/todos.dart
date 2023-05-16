@@ -37,11 +37,23 @@ class _TodosTabState extends State<TodosTab> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Todos',
-          style: TextStyle(
-            color: themeColor,
-          ),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/icons/app_icon.png',
+              width: 36.0,
+              height: 36.0,
+            ),
+            const SizedBox(
+              width: 16.0,
+            ),
+            Text(
+              'Todos',
+              style: TextStyle(
+                color: themeColor,
+              ),
+            ),
+          ],
         ),
         backgroundColor: themeColor.shade50,
         elevation: 0,
