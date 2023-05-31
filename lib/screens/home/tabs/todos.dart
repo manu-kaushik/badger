@@ -34,169 +34,193 @@ class _TodosTabState extends State<TodosTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/icons/app_icon.png',
-              width: 36.0,
-              height: 36.0,
-            ),
-            const SizedBox(
-              width: 16.0,
-            ),
-            Text(
-              'Todos',
-              style: TextStyle(
-                color: themeColor,
+    return WillPopScope(
+      onWillPop: () async {
+        if (_mode == ManagementModes.add) {
+          setState(() {
+            _mode = ManagementModes.view;
+          });
+
+          return false;
+        }
+
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/images/icons/app_icon.png',
+                width: 36.0,
+                height: 36.0,
               ),
+              const SizedBox(
+                width: 16.0,
+              ),
+              Text(
+                'Todos',
+                style: TextStyle(
+                  color: themeColor,
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: themeColor.shade50,
+          elevation: 0,
+          actions: [
+            PopupMenuButton<String>(
+              offset: const Offset(0, kToolbarHeight + 8),
+              icon: Icon(
+                Icons.more_vert,
+                color: themeColor, // Set the desired color here
+              ),
+              elevation: 0,
+              color: themeColor.shade50,
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'clearCompleted',
+                  child: Text('Clear Completed'),
+                ),
+              ],
+              onSelected: (value) {
+                if (value == 'clearCompleted') {
+                  _todosRepository.deleteCompletedTodos();
+
+                  setState(() {});
+                }
+              },
             ),
           ],
         ),
-        backgroundColor: themeColor.shade50,
-        elevation: 0,
-        actions: [
-          PopupMenuButton<String>(
-            offset: const Offset(0, kToolbarHeight + 8),
-            icon: Icon(
-              Icons.more_vert,
-              color: themeColor, // Set the desired color here
-            ),
-            elevation: 0,
-            color: themeColor.shade50,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'clearCompleted',
-                child: Text('Clear Completed'),
-              ),
-            ],
-            onSelected: (value) {
-              if (value == 'clearCompleted') {
-                _todosRepository.deleteCompletedTodos();
+        body: FutureBuilder<List<Todo>>(
+          future: _todosRepository.getAll(order: Orders.asc),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final todos = snapshot.data!;
 
-                setState(() {});
-              }
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder<List<Todo>>(
-        future: _todosRepository.getAll(order: Orders.asc),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final todos = snapshot.data!;
+              return ListView.builder(
+                itemCount: todos.isEmpty
+                    ? 1
+                    : _mode == ManagementModes.add
+                        ? todos.length + 1
+                        : todos.length,
+                itemBuilder: (context, index) {
+                  if (todos.isEmpty && index == 0) {
+                    if (_mode == ManagementModes.add) {
+                      return getTodoInput(context);
+                    } else {
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 3 / 4,
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.view_list_rounded,
+                              color: themeColor.shade400,
+                              size: 48.0,
+                            ),
+                            const SizedBox(
+                              height: 16.0,
+                            ),
+                            Text(
+                              'No todos yet! Try adding one!',
+                              style: TextStyle(color: themeColor),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }
 
-            if (todos.isEmpty) {
+                  if (index == todos.length) {
+                    return getTodoInput(context);
+                  } else {
+                    final todo = todos[index];
+
+                    return getTodoTile(index, todo);
+                  }
+                },
+              );
+            } else if (snapshot.hasError) {
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.view_list_rounded,
-                      color: themeColor.shade400,
-                      size: 48.0,
-                    ),
-                    const SizedBox(
-                      height: 16.0,
-                    ),
-                    Text(
-                      'No todos yet! Try adding one!',
-                      style: TextStyle(color: themeColor),
-                    ),
-                  ],
+                child: Text(
+                  'Something went wrong!',
+                  style: TextStyle(color: themeColor),
+                ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: themeColor,
+                  strokeWidth: 1,
                 ),
               );
             }
+          },
+        ),
+        floatingActionButton: Visibility(
+          visible: _mode == ManagementModes.view,
+          child: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                _mode = ManagementModes.add;
+              });
+            },
+            backgroundColor: themeColor,
+            elevation: 0,
+            child: const Icon(Icons.add_task),
+          ),
+        ),
+      ),
+    );
+  }
 
-            return ListView.builder(
-              itemCount: _mode == ManagementModes.add
-                  ? todos.length + 1
-                  : todos.length,
-              itemBuilder: (context, index) {
-                if (index == todos.length) {
-                  _todoFocusNode.requestFocus();
+  ListTile getTodoInput(BuildContext context) {
+    _todoFocusNode.requestFocus();
 
-                  return ListTile(
-                    title: TextField(
-                      controller: _todoController,
-                      focusNode: _todoFocusNode,
-                      decoration: InputDecoration(
-                        hintText: 'Enter a todo',
-                        hintStyle: TextStyle(color: themeColor),
-                        border: InputBorder.none,
-                      ),
-                      readOnly: _mode == ManagementModes.view,
-                      onSubmitted: (todoTitle) async {
-                        if (todoTitle != '') {
-                          final todo = Todo(
-                            id: await _todosRepository.getLastInsertedId() + 1,
-                            title: todoTitle,
-                          );
-
-                          _todosRepository.insert(todo);
-
-                          setState(() {
-                            _mode = ManagementModes.view;
-                          });
-
-                          _todoController.clear();
-                        } else {
-                          SnackBar snackBar =
-                              getSnackBar('Todo cannot be empty');
-
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                          _todoFocusNode.requestFocus();
-                        }
-                      },
-                    ),
-                    leading: Checkbox(
-                      value: false,
-                      onChanged: (_) async {},
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      activeColor: themeColor.shade300,
-                    ),
-                  );
-                } else {
-                  final todo = todos[index];
-
-                  return getTodoTile(index, todo);
-                }
-              },
+    return ListTile(
+      title: TextField(
+        controller: _todoController,
+        focusNode: _todoFocusNode,
+        decoration: InputDecoration(
+          hintText: 'Enter a todo',
+          hintStyle: TextStyle(color: themeColor),
+          border: InputBorder.none,
+        ),
+        readOnly: _mode == ManagementModes.view,
+        onSubmitted: (todoTitle) async {
+          if (todoTitle != '') {
+            final todo = Todo(
+              id: await _todosRepository.getLastInsertedId() + 1,
+              title: todoTitle,
             );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Something went wrong!',
-                style: TextStyle(color: themeColor),
-              ),
-            );
+
+            _todosRepository.insert(todo);
+
+            setState(() {
+              _mode = ManagementModes.view;
+            });
+
+            _todoController.clear();
           } else {
-            return Center(
-              child: CircularProgressIndicator(
-                color: themeColor,
-                strokeWidth: 1,
-              ),
-            );
+            SnackBar snackBar = getSnackBar('Todo cannot be empty');
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+            _todoFocusNode.requestFocus();
           }
         },
       ),
-      floatingActionButton: Visibility(
-        visible: _mode == ManagementModes.view,
-        child: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _mode = ManagementModes.add;
-            });
-          },
-          backgroundColor: themeColor,
-          elevation: 0,
-          child: const Icon(Icons.add_task),
+      leading: Checkbox(
+        value: false,
+        onChanged: (_) async {},
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
+        activeColor: themeColor.shade300,
       ),
     );
   }
@@ -241,6 +265,8 @@ class _TodosTabState extends State<TodosTab> {
           setState(() {
             _mode = ManagementModes.view;
           });
+
+          _todoController.clear();
         },
         onTapOutside: (_) {
           if (_mode != ManagementModes.view) {
@@ -262,6 +288,8 @@ class _TodosTabState extends State<TodosTab> {
           setState(() {
             _mode = ManagementModes.view;
           });
+
+          _todoController.clear();
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
