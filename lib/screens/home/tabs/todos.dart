@@ -15,13 +15,20 @@ class TodosTab extends StatefulWidget {
 class _TodosTabState extends State<TodosTab> {
   final _todosRepository = TodosRepository();
 
-  ManagementModes _mode = ManagementModes.view;
+  late ManagementModes _mode;
 
   final TextEditingController _todoController = TextEditingController();
 
   final FocusNode _todoFocusNode = FocusNode();
 
   int _currentTodoIndex = -1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _mode = ManagementModes.view;
+  }
 
   @override
   void dispose() {
@@ -36,6 +43,8 @@ class _TodosTabState extends State<TodosTab> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        ScaffoldMessenger.of(context).clearSnackBars();
+
         if (_mode == ManagementModes.add) {
           setState(() {
             _mode = ManagementModes.view;
@@ -48,137 +57,145 @@ class _TodosTabState extends State<TodosTab> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Image.asset(
-                'assets/images/icons/app_icon.png',
-                width: 36.0,
-                height: 36.0,
-              ),
-              const SizedBox(
-                width: 16.0,
-              ),
-              Text(
-                'Todos',
-                style: TextStyle(
-                  color: themeColor,
-                ),
-              ),
-            ],
-          ),
-          backgroundColor: themeColor.shade50,
-          elevation: 0,
-          actions: [
-            PopupMenuButton<String>(
-              offset: const Offset(0, kToolbarHeight + 8),
-              icon: Icon(
-                Icons.more_vert,
-                color: themeColor, // Set the desired color here
-              ),
-              elevation: 0,
-              color: themeColor.shade50,
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'clearCompleted',
-                  child: Text('Clear Completed'),
-                ),
-              ],
-              onSelected: (value) {
-                if (value == 'clearCompleted') {
-                  _todosRepository.deleteCompletedTodos();
-
-                  setState(() {});
-                }
-              },
-            ),
-          ],
-        ),
-        body: FutureBuilder<List<Todo>>(
-          future: _todosRepository.getAll(order: Orders.asc),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final todos = snapshot.data!;
-
-              return ListView.builder(
-                itemCount: todos.isEmpty
-                    ? 1
-                    : _mode == ManagementModes.add
-                        ? todos.length + 1
-                        : todos.length,
-                itemBuilder: (context, index) {
-                  if (todos.isEmpty && index == 0) {
-                    if (_mode == ManagementModes.add) {
-                      return getTodoInput(context);
-                    } else {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 3 / 4,
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.view_list_rounded,
-                              color: themeColor.shade400,
-                              size: 48.0,
-                            ),
-                            const SizedBox(
-                              height: 16.0,
-                            ),
-                            Text(
-                              'No todos yet! Try adding one!',
-                              style: TextStyle(color: themeColor),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  }
-
-                  if (index == todos.length) {
-                    return getTodoInput(context);
-                  } else {
-                    final todo = todos[index];
-
-                    return getTodoTile(index, todo);
-                  }
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  'Something went wrong!',
-                  style: TextStyle(color: themeColor),
-                ),
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: themeColor,
-                  strokeWidth: 1,
-                ),
-              );
-            }
-          },
-        ),
-        floatingActionButton: Visibility(
-          visible: _mode == ManagementModes.view,
-          child: FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                _mode = ManagementModes.add;
-              });
-            },
-            backgroundColor: themeColor,
-            elevation: 0,
-            child: const Icon(Icons.add_task),
-          ),
-        ),
+        appBar: _buildAppBar(),
+        body: _buildTodosList(),
+        floatingActionButton: _buildAddTodoBtn(),
       ),
     );
   }
 
-  ListTile getTodoInput(BuildContext context) {
+  Widget _buildAddTodoBtn() {
+    return Visibility(
+      visible: _mode == ManagementModes.view,
+      child: FloatingActionButton(
+        heroTag: 'addTodoBtn',
+        onPressed: () {
+          setState(() {
+            _mode = ManagementModes.add;
+          });
+        },
+        child: const Icon(Icons.add_task),
+      ),
+    );
+  }
+
+  FutureBuilder<List<Todo>> _buildTodosList() {
+    return FutureBuilder<List<Todo>>(
+      future: _todosRepository.getAll(order: Orders.asc),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final todos = snapshot.data!;
+
+          return ListView.builder(
+            itemCount: todos.isEmpty
+                ? 1
+                : (_mode == ManagementModes.add
+                    ? todos.length + 1
+                    : todos.length),
+            itemBuilder: (context, index) {
+              if (todos.isEmpty && index == 0) {
+                return _mode == ManagementModes.add
+                    ? _getTodoInput(context)
+                    : _getNoTodosView(context);
+              } else if (index == todos.length) {
+                return _getTodoInput(context);
+              }
+
+              final todo = todos[index];
+              return _getTodoTile(index, todo);
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              'Something went wrong!',
+              style: TextStyle(color: themeColor),
+            ),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              color: themeColor,
+              strokeWidth: 1,
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Container _getNoTodosView(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.view_list_rounded,
+            color: themeColor.shade400,
+            size: 48.0,
+          ),
+          const SizedBox(
+            height: 16.0,
+          ),
+          Text(
+            'No todos yet! Try adding one!',
+            style: TextStyle(color: themeColor),
+          ),
+        ],
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Row(
+        children: [
+          Image.asset(
+            'assets/images/icons/app_icon.png',
+            width: 36.0,
+            height: 36.0,
+          ),
+          const SizedBox(
+            width: 16.0,
+          ),
+          Text(
+            'Todos',
+            style: TextStyle(
+              color: themeColor,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        PopupMenuButton<String>(
+          offset: const Offset(0, kToolbarHeight + 8),
+          icon: Icon(
+            Icons.more_vert,
+            color: themeColor, // Set the desired color here
+          ),
+          elevation: 0,
+          color: themeColor.shade50,
+          itemBuilder: (context) => [
+            const PopupMenuItem(
+              value: 'clearCompleted',
+              child: Text('Clear Completed'),
+            ),
+          ],
+          onSelected: (value) {
+            if (value == 'clearCompleted') {
+              _todosRepository.deleteCompletedTodos();
+
+              setState(() {});
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  ListTile _getTodoInput(BuildContext context) {
     _todoFocusNode.requestFocus();
 
     return ListTile(
@@ -192,7 +209,7 @@ class _TodosTabState extends State<TodosTab> {
         ),
         readOnly: _mode == ManagementModes.view,
         onSubmitted: (todoTitle) async {
-          if (todoTitle != '') {
+          if (todoTitle.isNotEmpty) {
             final todo = Todo(
               id: await _todosRepository.getLastInsertedId() + 1,
               title: todoTitle,
@@ -218,23 +235,24 @@ class _TodosTabState extends State<TodosTab> {
         value: false,
         onChanged: (_) async {},
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         activeColor: themeColor.shade300,
       ),
     );
   }
 
-  ListTile getTodoTile(int index, Todo todo) {
+  ListTile _getTodoTile(int index, Todo todo) {
+    final isEditMode =
+        _mode == ManagementModes.edit && _currentTodoIndex == index;
+
     Widget child = GestureDetector(
       onTap: () {
         if (!todo.completed) {
           setState(() {
             _mode = ManagementModes.edit;
-
             _currentTodoIndex = index;
           });
-
           _todoFocusNode.requestFocus();
         }
       },
@@ -247,7 +265,7 @@ class _TodosTabState extends State<TodosTab> {
       ),
     );
 
-    if (_mode == ManagementModes.edit && _currentTodoIndex == index) {
+    if (isEditMode) {
       _todoController.text = todo.title;
 
       child = TextField(
@@ -283,7 +301,7 @@ class _TodosTabState extends State<TodosTab> {
       leading: Checkbox(
         value: todo.completed,
         onChanged: (value) async {
-          await TodosRepository().update(todo.copyWith(completed: value));
+          await _todosRepository.update(todo.copyWith(completed: value));
 
           setState(() {
             _mode = ManagementModes.view;
@@ -292,7 +310,7 @@ class _TodosTabState extends State<TodosTab> {
           _todoController.clear();
         },
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         activeColor: themeColor.shade300,
       ),

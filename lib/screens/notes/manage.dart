@@ -41,8 +41,8 @@ class _ManageNoteState extends State<ManageNote> {
 
   @override
   Widget build(BuildContext context) {
-    setMode(context);
-    setNote(context);
+    _setMode(context);
+    _setNote(context);
 
     return WillPopScope(
       onWillPop: () async {
@@ -51,6 +51,7 @@ class _ManageNoteState extends State<ManageNote> {
 
           return false;
         }
+
         if (_bodyFocusNode.hasFocus) {
           _bodyFocusNode.unfocus();
 
@@ -71,143 +72,171 @@ class _ManageNoteState extends State<ManageNote> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: TextField(
-            controller: _titleController,
-            focusNode: _titleFocusNode,
-            decoration: InputDecoration(
-              hintText: 'Enter a title',
-              hintStyle: TextStyle(color: themeColor),
-              border: InputBorder.none,
-            ),
-            readOnly: _mode == ManagementModes.view,
-            onTap: () {
-              if (_mode == ManagementModes.view) {
-                setState(() {
-                  _mode = ManagementModes.edit;
-                });
-              }
-            },
-          ),
-          actions: [
-            Visibility(
-              visible: _mode != ManagementModes.view,
-              child: IconButton(
-                icon: getActionIcon(),
-                color: themeColor,
-                onPressed: () {
-                  if (_mode == ManagementModes.add) {
-                    _saveNote(context).then((bool isNoteSaved) {
-                      if (isNoteSaved) {
-                        Navigator.pop(context);
-                      }
-                    });
-                  }
-
-                  if (_mode == ManagementModes.edit) {
-                    _updateNote(context).then((bool isNoteUpdated) {
-                      if (isNoteUpdated) {
-                        Navigator.pop(context);
-                      }
-                    });
-                  }
-                },
-              ),
-            ),
-            Visibility(
-              visible: _mode == ManagementModes.view,
-              child: IconButton(
-                icon: const Icon(Icons.copy),
-                color: themeColor,
-                onPressed: () {
-                  FlutterClipboard.copy(_note.body).then((_) {
-                    SnackBar snackBar =
-                        getSnackBar('Copied note body to clipboard');
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }).catchError((_) {
-                    SnackBar snackBar = getSnackBar(
-                      'Something went wrong!',
-                      type: AlertTypes.error,
-                    );
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  });
-                },
-              ),
-            ),
-            Visibility(
-              visible: _mode == ManagementModes.view,
-              child: IconButton(
-                icon: const Icon(Icons.delete_outline_rounded),
-                color: Colors.red,
-                onPressed: () {
-                  if (_mode != ManagementModes.add) {
-                    SnackBar snackBar = getSnackBar(
-                      'Are you sure you want to delete this note?',
-                      action: SnackBarAction(
-                          label: 'Delete',
-                          textColor: Colors.red,
-                          onPressed: () {
-                            _notesRepository
-                                .delete(_note)
-                                .then((_) => Navigator.pop(context));
-                          }),
-                      duration: const Duration(seconds: 5),
-                    );
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-              ),
-            ),
-          ],
-          backgroundColor: themeColor.shade50,
-          elevation: 0,
-          iconTheme: IconThemeData(color: themeColor),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 16.0,
-            horizontal: 24.0,
-          ),
-          child: _mode == ManagementModes.view
-              ? GestureDetector(
-                  onTap: () {
-                    if (_mode == ManagementModes.view) {
-                      setState(() {
-                        _mode = ManagementModes.edit;
-                      });
-                    }
-                  },
-                  child: MarkdownBody(
-                    data: _note.body,
-                    extensionSet: ExtensionSet(
-                      ExtensionSet.gitHubFlavored.blockSyntaxes,
-                      [
-                        EmojiSyntax(),
-                        ...ExtensionSet.gitHubFlavored.inlineSyntaxes,
-                      ],
-                    ),
-                  ),
-                )
-              : TextField(
-                  controller: _bodyController,
-                  focusNode: _bodyFocusNode,
-                  maxLines: null,
-                  expands: true,
-                  decoration: InputDecoration(
-                    hintText: 'Start writing here...',
-                    hintStyle: TextStyle(color: themeColor),
-                    border: InputBorder.none,
-                  ),
-                ),
-        ),
+        appBar: _buildAppBar(context),
+        body: _buildBody(),
       ),
     );
   }
 
-  Icon getActionIcon() {
+  Padding _buildBody() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 16.0,
+        horizontal: 24.0,
+      ),
+      child: _mode == ManagementModes.view
+          ? GestureDetector(
+              onTap: () {
+                if (_mode == ManagementModes.view) {
+                  setState(() {
+                    _mode = ManagementModes.edit;
+                  });
+                }
+              },
+              child: _buildMarkdownPreview(),
+            )
+          : _getBodyInput(),
+    );
+  }
+
+  TextField _getBodyInput() {
+    return TextField(
+      controller: _bodyController,
+      focusNode: _bodyFocusNode,
+      maxLines: null,
+      expands: true,
+      decoration: InputDecoration(
+        hintText: 'Start writing here...',
+        hintStyle: TextStyle(color: themeColor),
+        border: InputBorder.none,
+      ),
+    );
+  }
+
+  MarkdownBody _buildMarkdownPreview() {
+    return MarkdownBody(
+      data: _note.body,
+      extensionSet: ExtensionSet(
+        ExtensionSet.gitHubFlavored.blockSyntaxes,
+        [
+          EmojiSyntax(),
+          ...ExtensionSet.gitHubFlavored.inlineSyntaxes,
+        ],
+      ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: _buildTitleInput(),
+      actions: [
+        _buildMainBtn(context),
+        _buildCopyBtn(context),
+        _buildDeleteBtn(context),
+      ],
+    );
+  }
+
+  Widget _buildMainBtn(BuildContext context) {
+    return Visibility(
+      visible: _mode != ManagementModes.view,
+      child: IconButton(
+        icon: _getActionIcon(),
+        color: themeColor,
+        onPressed: () {
+          if (_mode == ManagementModes.add) {
+            _saveNote(context).then((bool isNoteSaved) {
+              if (isNoteSaved) {
+                Navigator.pop(context);
+              }
+            });
+          }
+
+          if (_mode == ManagementModes.edit) {
+            _updateNote(context).then((bool isNoteUpdated) {
+              if (isNoteUpdated) {
+                Navigator.pop(context);
+              }
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildCopyBtn(BuildContext context) {
+    return Visibility(
+      visible: _mode == ManagementModes.view,
+      child: IconButton(
+        icon: const Icon(Icons.copy),
+        color: themeColor,
+        onPressed: () {
+          FlutterClipboard.copy(_note.body).then((_) {
+            SnackBar snackBar = getSnackBar('Copied note body to clipboard');
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }).catchError((_) {
+            SnackBar snackBar = getSnackBar(
+              'Something went wrong!',
+              type: AlertTypes.error,
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildDeleteBtn(BuildContext context) {
+    return Visibility(
+      visible: _mode == ManagementModes.view,
+      child: IconButton(
+        icon: const Icon(Icons.delete_outline_rounded),
+        color: Colors.red,
+        onPressed: () {
+          if (_mode != ManagementModes.add) {
+            SnackBar snackBar = getSnackBar(
+              'Are you sure you want to delete this note?',
+              action: SnackBarAction(
+                  label: 'Delete',
+                  textColor: Colors.red,
+                  onPressed: () {
+                    _notesRepository
+                        .delete(_note)
+                        .then((_) => Navigator.pop(context));
+                  }),
+              duration: const Duration(seconds: 5),
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        },
+      ),
+    );
+  }
+
+  TextField _buildTitleInput() {
+    return TextField(
+      controller: _titleController,
+      focusNode: _titleFocusNode,
+      decoration: InputDecoration(
+        hintText: 'Enter a title',
+        hintStyle: TextStyle(color: themeColor),
+        border: InputBorder.none,
+      ),
+      readOnly: _mode == ManagementModes.view,
+      onTap: () {
+        if (_mode == ManagementModes.view) {
+          setState(() {
+            _mode = ManagementModes.edit;
+          });
+        }
+      },
+    );
+  }
+
+  Icon _getActionIcon() {
     if (_mode == ManagementModes.view) {
       return const Icon(Icons.edit_rounded);
     } else {
@@ -215,7 +244,7 @@ class _ManageNoteState extends State<ManageNote> {
     }
   }
 
-  void setMode(BuildContext context) {
+  void _setMode(BuildContext context) {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
     if (_mode != ManagementModes.edit) {
@@ -223,7 +252,7 @@ class _ManageNoteState extends State<ManageNote> {
     }
   }
 
-  void setNote(BuildContext context) {
+  void _setNote(BuildContext context) {
     if (_mode != ManagementModes.add) {
       Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 

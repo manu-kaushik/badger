@@ -30,12 +30,14 @@ SnackBar getSnackBar(
     }
   }
 
+  MaterialColor color = getColor();
+
   return SnackBar(
     content: Text(
       message,
-      style: TextStyle(color: getColor()),
+      style: TextStyle(color: color),
     ),
-    backgroundColor: getColor().shade50,
+    backgroundColor: color.shade50,
     action: action,
     duration: duration ?? const Duration(milliseconds: 4000),
     elevation: elevation,

@@ -17,56 +17,70 @@ class _HomeState extends State<Home> {
 
   int _currentIndex = 0;
 
-  final List<Widget> _children = [
-    const NotesTab(),
-    const TodosTab(),
-  ];
-
   final String _currentIndexKey = 'currentHomeTabIndex';
 
-  void onTabTapped(int index) {
-    _localStorage.setInt(_currentIndexKey, index);
+  @override
+  void initState() {
+    super.initState();
+
+    _setCurrentIndex();
   }
 
   @override
   Widget build(BuildContext context) {
-    setCurrentIndex();
-
     return Scaffold(
-      body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.note,
-              color: themeColor,
-            ),
-            label: 'Notes',
-            tooltip: 'Notes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.checklist_rounded,
-              color: themeColor,
-            ),
-            label: 'Todos',
-            tooltip: 'Todos',
-          ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          NotesTab(),
+          TodosTab(),
         ],
-        backgroundColor: themeColor.shade50,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        iconSize: 28,
-        selectedIconTheme: const IconThemeData(size: 32),
       ),
+      bottomNavigationBar: _getBottomNav(),
     );
   }
 
-  void setCurrentIndex() async {
+  BottomNavigationBar _getBottomNav() {
+    return BottomNavigationBar(
+      onTap: _onTabTapped,
+      currentIndex: _currentIndex,
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.note,
+            color: themeColor,
+          ),
+          label: 'Notes',
+          tooltip: 'Notes',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.checklist_rounded,
+            color: themeColor,
+          ),
+          label: 'Todos',
+          tooltip: 'Todos',
+        ),
+      ],
+      backgroundColor: themeColor.shade50,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      iconSize: 28,
+      selectedIconTheme: const IconThemeData(size: 32),
+    );
+  }
+
+  void _setCurrentIndex() async {
     _currentIndex = await _localStorage.getInt(_currentIndexKey);
 
     setState(() {});
+  }
+
+  void _onTabTapped(int index) {
+    _localStorage.setInt(_currentIndexKey, index);
+
+    setState(() {
+      _currentIndex = index;
+    });
   }
 }
