@@ -39,10 +39,17 @@ class _ManageNoteState extends State<ManageNote> {
     super.dispose();
   }
 
+  void _setInitialInputFocus() {
+    if (_mode != ManagementModes.view) {
+      _titleFocusNode.requestFocus();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _setMode(context);
     _setNote(context);
+    _setInitialInputFocus();
 
     return WillPopScope(
       onWillPop: () async {
@@ -232,6 +239,9 @@ class _ManageNoteState extends State<ManageNote> {
             _mode = ManagementModes.edit;
           });
         }
+      },
+      onSubmitted: (_) {
+        _bodyFocusNode.requestFocus();
       },
     );
   }
