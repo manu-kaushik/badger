@@ -1,4 +1,4 @@
-const String appName = 'Badger: Notes & Todos';
+const String appName = 'Badger';
 
 // Route Names
 const String homeRoute = '/home';
