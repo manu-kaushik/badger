@@ -43,3 +43,5 @@ SnackBar getSnackBar(
     elevation: elevation,
   );
 }
+
+Size screenSize(context) => MediaQuery.of(context).size;

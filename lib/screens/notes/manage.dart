@@ -1,7 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:markdown/markdown.dart';
 import 'package:badger/models/note.dart';
 import 'package:badger/repositories/notes.dart';
 import 'package:badger/utils/colors.dart';
@@ -28,6 +27,8 @@ class _ManageNoteState extends State<ManageNote> {
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _bodyFocusNode = FocusNode();
 
+  bool _initialFocus = true;
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -40,9 +41,11 @@ class _ManageNoteState extends State<ManageNote> {
   }
 
   void _setInitialInputFocus() {
-    if (_mode != ManagementModes.view) {
+    if (_mode != ManagementModes.view && _initialFocus) {
       _titleFocusNode.requestFocus();
     }
+
+    _initialFocus = false;
   }
 
   @override
@@ -85,50 +88,81 @@ class _ManageNoteState extends State<ManageNote> {
     );
   }
 
-  Padding _buildBody() {
+  Widget _buildBody() {
+    return _mode == ManagementModes.view
+        ? GestureDetector(
+            onTap: () {
+              if (_mode == ManagementModes.view) {
+                setState(() {
+                  _mode = ManagementModes.edit;
+                });
+
+                _bodyFocusNode.requestFocus();
+              }
+            },
+            child: _buildMarkdownPreview(),
+          )
+        : _getBodyInput();
+  }
+
+  Widget _getBodyInput() {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: 16.0,
         horizontal: 24.0,
       ),
-      child: _mode == ManagementModes.view
-          ? GestureDetector(
-              onTap: () {
-                if (_mode == ManagementModes.view) {
-                  setState(() {
-                    _mode = ManagementModes.edit;
-                  });
-                }
-              },
-              child: _buildMarkdownPreview(),
-            )
-          : _getBodyInput(),
-    );
-  }
-
-  TextField _getBodyInput() {
-    return TextField(
-      controller: _bodyController,
-      focusNode: _bodyFocusNode,
-      maxLines: null,
-      expands: true,
-      decoration: InputDecoration(
-        hintText: 'Start writing here...',
-        hintStyle: TextStyle(color: themeColor),
-        border: InputBorder.none,
+      child: TextField(
+        controller: _bodyController,
+        focusNode: _bodyFocusNode,
+        maxLines: null,
+        expands: true,
+        decoration: InputDecoration(
+          hintText: 'Start writing here...',
+          hintStyle: TextStyle(color: themeColor),
+          border: InputBorder.none,
+        ),
       ),
     );
   }
 
-  MarkdownBody _buildMarkdownPreview() {
-    return MarkdownBody(
-      data: _note.body,
-      extensionSet: ExtensionSet(
-        ExtensionSet.gitHubFlavored.blockSyntaxes,
-        [
-          EmojiSyntax(),
-          ...ExtensionSet.gitHubFlavored.inlineSyntaxes,
-        ],
+  Widget _buildMarkdownPreview() {
+    return Container(
+      width: screenSize(context).width,
+      height: screenSize(context).height,
+      padding: const EdgeInsets.symmetric(
+        vertical: 16.0,
+        horizontal: 24.0,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.white,
+          width: 1,
+        ),
+      ),
+      child: MarkdownBody(
+        data: _note.body,
+        fitContent: false,
+        styleSheet: MarkdownStyleSheet(
+          blockSpacing: 12.0,
+          code: TextStyle(
+            color: themeColor,
+            backgroundColor: themeColor.shade50,
+            fontFamily: 'SourceCodePro',
+            fontWeight: FontWeight.w500,
+          ),
+          codeblockDecoration: BoxDecoration(
+            color: themeColor.shade50,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          codeblockPadding:
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          blockquoteDecoration: BoxDecoration(
+            color: Colors.amber.shade50,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          blockquotePadding:
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        ),
       ),
     );
   }
