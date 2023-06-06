@@ -120,16 +120,16 @@ class _NotesTabState extends State<NotesTab> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                note.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
+              if (note.title != null)
+                Text(
+                  note.title!,
+                  style: TextStyle(
+                    color: themeColor.shade400,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
+              if (note.title != null) const SizedBox(height: 8.0),
               Text(
                 _getTrimmedContent(note.body),
                 style: const TextStyle(
@@ -138,6 +138,15 @@ class _NotesTabState extends State<NotesTab> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (note.date != null)
+                Text(
+                  note.date!,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: themeColor.shade300,
+                    fontSize: 12.0,
+                  ),
+                ),
             ],
           ),
         ),

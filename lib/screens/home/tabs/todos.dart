@@ -87,6 +87,7 @@ class _TodosTabState extends State<TodosTab> {
           final todos = snapshot.data!;
 
           return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 48.0),
             itemCount: todos.isEmpty
                 ? 1
                 : (_mode == ManagementModes.add
@@ -199,6 +200,7 @@ class _TodosTabState extends State<TodosTab> {
     _todoFocusNode.requestFocus();
 
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       title: TextField(
         controller: _todoController,
         focusNode: _todoFocusNode,
@@ -213,6 +215,7 @@ class _TodosTabState extends State<TodosTab> {
             final todo = Todo(
               id: await _todosRepository.getLastInsertedId() + 1,
               title: todoTitle,
+              date: getCurrentTimestamp(),
             );
 
             _todosRepository.insert(todo);
@@ -256,12 +259,29 @@ class _TodosTabState extends State<TodosTab> {
           _todoFocusNode.requestFocus();
         }
       },
-      child: Text(
-        todo.title,
-        style: TextStyle(
-          color: todo.completed ? themeColor.shade300 : themeColor,
-          decoration: todo.completed ? TextDecoration.lineThrough : null,
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            todo.title,
+            style: TextStyle(
+              color: todo.completed ? themeColor.shade300 : themeColor,
+              decoration: todo.completed ? TextDecoration.lineThrough : null,
+            ),
+          ),
+          if (todo.date != null)
+            const SizedBox(
+              height: 4.0,
+            ),
+          if (todo.date != null)
+            Text(
+              todo.date!,
+              style: TextStyle(
+                color: themeColor.shade300,
+                fontSize: 12.0,
+              ),
+            )
+        ],
       ),
     );
 
@@ -278,7 +298,12 @@ class _TodosTabState extends State<TodosTab> {
         ),
         readOnly: _mode == ManagementModes.view,
         onSubmitted: (todoTitle) {
-          _todosRepository.update(todo.copyWith(title: todoTitle));
+          _todosRepository.update(
+            todo.copyWith(
+              title: todoTitle,
+              date: getCurrentTimestamp(),
+            ),
+          );
 
           setState(() {
             _mode = ManagementModes.view;
@@ -297,11 +322,18 @@ class _TodosTabState extends State<TodosTab> {
     }
 
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       title: child,
+      horizontalTitleGap: 4.0,
       leading: Checkbox(
         value: todo.completed,
         onChanged: (value) async {
-          await _todosRepository.update(todo.copyWith(completed: value));
+          await _todosRepository.update(
+            todo.copyWith(
+              completed: value,
+              date: getCurrentTimestamp(),
+            ),
+          );
 
           setState(() {
             _mode = ManagementModes.view;

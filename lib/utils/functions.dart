@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badger/utils/colors.dart';
+import 'package:intl/intl.dart';
 
 import 'constants.dart';
 
@@ -45,3 +46,10 @@ SnackBar getSnackBar(
 }
 
 Size screenSize(context) => MediaQuery.of(context).size;
+
+String getCurrentTimestamp() {
+  DateTime currentDate = DateTime.now();
+  String formattedDate = DateFormat('d MMMM, yyyy hh:mm a').format(currentDate);
+
+  return formattedDate;
+}

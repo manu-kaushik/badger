@@ -16,6 +16,7 @@ class NotesRepository {
   static const String _colId = 'id';
   static const String _colTitle = 'title';
   static const String _colBody = 'body';
+  static const String _colDate = 'date';
 
   Database? _database;
 
@@ -42,7 +43,8 @@ class NotesRepository {
           CREATE TABLE $_tableName (
             $_colId INTEGER PRIMARY KEY AUTOINCREMENT,
             $_colTitle TEXT,
-            $_colBody TEXT
+            $_colBody TEXT,
+            $_colDate TEXT
           )
           ''');
     });

@@ -302,15 +302,15 @@ class _ManageNoteState extends State<ManageNote> {
 
       _note = arguments['note'] as Note;
 
-      _titleController.text = _note.title;
+      _titleController.text = _note.title ?? '';
       _bodyController.text = _note.body;
     }
   }
 
   Future<bool> _saveNote(BuildContext context) async {
     int id = await _notesRepository.getLastInsertedId() + 1;
-    String title = _titleController.text;
-    String body = _bodyController.text;
+    String title = _titleController.text.trim();
+    String body = _bodyController.text.trim();
 
     if (title == '') {
       SnackBar snackBar = getSnackBar('Note title cannot be empty');
@@ -333,6 +333,7 @@ class _ManageNoteState extends State<ManageNote> {
         id: id,
         title: title,
         body: body,
+        date: getCurrentTimestamp(),
       );
 
       await _notesRepository.insert(note);
@@ -362,10 +363,13 @@ class _ManageNoteState extends State<ManageNote> {
 
       return false;
     } else {
-      await _notesRepository.update(_note.copyWith(
-        title: title,
-        body: body,
-      ));
+      await _notesRepository.update(
+        _note.copyWith(
+          title: title,
+          body: body,
+          date: getCurrentTimestamp(),
+        ),
+      );
 
       return true;
     }

@@ -10,6 +10,7 @@ class Todo {
   String? description;
   bool completed;
   String? color;
+  String? date;
 
   Todo({
     required this.id,
@@ -17,6 +18,7 @@ class Todo {
     this.description,
     this.completed = false,
     this.color,
+    this.date,
   });
 
   factory Todo.fromJson(Map<String, dynamic> json) => Todo(
@@ -25,6 +27,7 @@ class Todo {
         description: json["description"],
         completed: json["completed"] == 1 ? true : false,
         color: json["color"],
+        date: json["date"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -33,6 +36,7 @@ class Todo {
         "description": description,
         "completed": completed ? 1 : 0,
         "color": color,
+        "date": date,
       };
 
   Todo copyWith({
@@ -40,6 +44,7 @@ class Todo {
     String? description,
     bool? completed,
     String? color,
+    String? date,
   }) {
     return Todo(
       id: id,
@@ -47,6 +52,7 @@ class Todo {
       description: description ?? this.description,
       completed: completed ?? this.completed,
       color: color ?? this.color,
+      date: date ?? this.date,
     );
   }
 }

@@ -18,6 +18,7 @@ class TodosRepository {
   static const String _colDescription = "description";
   static const String _colCompleted = "completed";
   static const String _colColor = "color";
+  static const String _colDate = 'date';
 
   Database? _database;
 
@@ -46,7 +47,8 @@ class TodosRepository {
             $_colTitle TEXT, 
             $_colDescription TEXT, 
             $_colCompleted INTEGER, 
-            $_colColor TEXT
+            $_colColor TEXT,
+            $_colDate TEXT
           )
           ''');
     });
