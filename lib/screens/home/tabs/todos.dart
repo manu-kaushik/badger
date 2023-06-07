@@ -219,19 +219,17 @@ class _TodosTabState extends State<TodosTab> {
             );
 
             _todosRepository.insert(todo);
-
-            setState(() {
-              _mode = ManagementModes.view;
-            });
-
-            _todoController.clear();
           } else {
-            SnackBar snackBar = getSnackBar('Todo cannot be empty');
+            SnackBar snackBar = getSnackBar('Empty todo discarded');
 
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-            _todoFocusNode.requestFocus();
           }
+
+          setState(() {
+            _mode = ManagementModes.view;
+          });
+
+          _todoController.clear();
         },
       ),
       leading: Checkbox(
@@ -292,18 +290,26 @@ class _TodosTabState extends State<TodosTab> {
         controller: _todoController,
         focusNode: _todoFocusNode,
         decoration: InputDecoration(
-          hintText: todo.title,
+          hintText: 'Enter a todo',
           hintStyle: TextStyle(color: themeColor),
           border: InputBorder.none,
         ),
         readOnly: _mode == ManagementModes.view,
         onSubmitted: (todoTitle) {
-          _todosRepository.update(
-            todo.copyWith(
-              title: todoTitle,
-              date: getCurrentTimestamp(),
-            ),
-          );
+          if (todoTitle.isNotEmpty) {
+            _todosRepository.update(
+              todo.copyWith(
+                title: todoTitle,
+                date: getCurrentTimestamp(),
+              ),
+            );
+          } else {
+            _todosRepository.delete(todo);
+
+            SnackBar snackBar = getSnackBar('Empty todo deleted');
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
 
           setState(() {
             _mode = ManagementModes.view;
