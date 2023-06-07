@@ -27,6 +27,8 @@ class _ManageNoteState extends State<ManageNote> {
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _bodyFocusNode = FocusNode();
 
+  bool _initialModeSetup = true;
+  bool _initialNoteSetup = true;
   bool _initialFocus = true;
 
   @override
@@ -58,17 +60,33 @@ class _ManageNoteState extends State<ManageNote> {
       onWillPop: () async {
         if (_titleFocusNode.hasFocus) {
           _titleFocusNode.unfocus();
-
-          return false;
         }
 
         if (_bodyFocusNode.hasFocus) {
           _bodyFocusNode.unfocus();
+        }
+
+        if (_mode == ManagementModes.add) {
+          bool shouldClose = await _saveNote(context);
+
+          if (shouldClose) {
+            return true;
+          }
+
+          setState(() {
+            _mode = ManagementModes.view;
+          });
 
           return false;
         }
 
         if (_mode == ManagementModes.edit) {
+          bool shouldClose = await _updateNote(context);
+
+          if (shouldClose) {
+            return true;
+          }
+
           setState(() {
             _mode = ManagementModes.view;
           });
@@ -171,90 +189,85 @@ class _ManageNoteState extends State<ManageNote> {
     return AppBar(
       title: _buildTitleInput(),
       actions: [
-        _buildMainBtn(context),
-        _buildCopyBtn(context),
-        _buildDeleteBtn(context),
+        if (_mode == ManagementModes.view)
+          PopupMenuButton<String>(
+            offset: const Offset(0, kToolbarHeight + 8),
+            icon: Icon(
+              Icons.more_vert,
+              color: themeColor, // Set the desired color here
+            ),
+            elevation: 0,
+            color: themeColor.shade50,
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'copyNoteBody',
+                child: Text('Copy Note Body'),
+              ),
+              const PopupMenuItem(
+                value: 'deleteNote',
+                child: Text('Delete Note'),
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 'copyNoteBody') {
+                _copyNoteBody(context);
+              }
+
+              if (value == 'deleteNote') {
+                _showDeleteNoteConfirmation(context);
+              }
+            },
+          ),
       ],
     );
   }
 
-  Widget _buildMainBtn(BuildContext context) {
-    return Visibility(
-      visible: _mode != ManagementModes.view,
-      child: IconButton(
-        icon: _getActionIcon(),
-        color: themeColor,
-        onPressed: () {
-          if (_mode == ManagementModes.add) {
-            _saveNote(context).then((bool isActionComplete) {
-              if (isActionComplete) {
-                Navigator.pop(context);
-              }
-            });
-          }
+  void _showDeleteNoteConfirmation(BuildContext context) {
+    if (_mode == ManagementModes.add) {
+      SnackBar snackBar = getSnackBar(
+        'Note discarded',
+      );
 
-          if (_mode == ManagementModes.edit) {
-            _updateNote(context).then((bool isActionComplete) {
-              if (isActionComplete) {
-                Navigator.pop(context);
-              }
-            });
-          }
-        },
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      Navigator.pop(context);
+    } else {
+      SnackBar snackBar = getSnackBar(
+        'Are you sure you want to delete this note?',
+        action: SnackBarAction(
+            label: 'Delete',
+            textColor: Colors.red,
+            onPressed: () {
+              _notesRepository
+                  .delete(_note)
+                  .then((_) => Navigator.pop(context));
+            }),
+        duration: const Duration(seconds: 5),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
-  Widget _buildCopyBtn(BuildContext context) {
-    return Visibility(
-      visible: _mode == ManagementModes.view,
-      child: IconButton(
-        icon: const Icon(Icons.copy),
-        color: themeColor,
-        onPressed: () {
-          FlutterClipboard.copy(_note.body).then((_) {
-            SnackBar snackBar = getSnackBar('Copied note body to clipboard');
+  void _copyNoteBody(BuildContext context) {
+    if (_bodyController.text.isNotEmpty) {
+      FlutterClipboard.copy(_note.body).then((_) {
+        SnackBar snackBar = getSnackBar('Copied note body to clipboard');
 
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }).catchError((_) {
-            SnackBar snackBar = getSnackBar(
-              'Something went wrong!',
-              type: AlertTypes.error,
-            );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }).catchError((_) {
+        SnackBar snackBar = getSnackBar(
+          'Something went wrong!',
+          type: AlertTypes.error,
+        );
 
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          });
-        },
-      ),
-    );
-  }
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      });
+    } else {
+      SnackBar snackBar = getSnackBar('Did not copy as the note body is empty');
 
-  Widget _buildDeleteBtn(BuildContext context) {
-    return Visibility(
-      visible: _mode == ManagementModes.view,
-      child: IconButton(
-        icon: const Icon(Icons.delete_outline_rounded),
-        color: Colors.red,
-        onPressed: () {
-          if (_mode != ManagementModes.add) {
-            SnackBar snackBar = getSnackBar(
-              'Are you sure you want to delete this note?',
-              action: SnackBarAction(
-                  label: 'Delete',
-                  textColor: Colors.red,
-                  onPressed: () {
-                    _notesRepository
-                        .delete(_note)
-                        .then((_) => Navigator.pop(context));
-                  }),
-              duration: const Duration(seconds: 5),
-            );
-
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-        },
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   TextField _buildTitleInput() {
@@ -280,24 +293,18 @@ class _ManageNoteState extends State<ManageNote> {
     );
   }
 
-  Icon _getActionIcon() {
-    if (_mode == ManagementModes.view) {
-      return const Icon(Icons.edit_rounded);
-    } else {
-      return const Icon(Icons.done_rounded);
-    }
-  }
-
   void _setMode(BuildContext context) {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
-    if (_mode != ManagementModes.edit) {
+    if (_mode != ManagementModes.edit && _initialModeSetup) {
       _mode = arguments['mode'] as ManagementModes;
     }
+
+    _initialModeSetup = false;
   }
 
   void _setNote(BuildContext context) {
-    if (_mode != ManagementModes.add) {
+    if (_mode != ManagementModes.add && _initialNoteSetup) {
       Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
       _note = arguments['note'] as Note;
@@ -305,6 +312,8 @@ class _ManageNoteState extends State<ManageNote> {
       _titleController.text = _note.title;
       _bodyController.text = _note.body;
     }
+
+    _initialNoteSetup = false;
   }
 
   Future<bool> _saveNote(BuildContext context) async {
@@ -312,6 +321,13 @@ class _ManageNoteState extends State<ManageNote> {
 
     String title = _titleController.text.trim();
     String body = _bodyController.text.trim();
+
+    _note = Note(
+      id: id,
+      title: title,
+      body: body,
+      date: getCurrentTimestamp(),
+    );
 
     if (title == '' && body == '') {
       SnackBar snackBar = getSnackBar('Empty note discarded');
@@ -322,22 +338,20 @@ class _ManageNoteState extends State<ManageNote> {
 
       return true;
     } else {
-      final note = Note(
-        id: id,
-        title: title,
-        body: body,
-        date: getCurrentTimestamp(),
-      );
+      final note = _note;
 
       await _notesRepository.insert(note);
 
-      return true;
+      return false;
     }
   }
 
   Future<bool> _updateNote(BuildContext context) async {
     String title = _titleController.text.trim();
     String body = _bodyController.text.trim();
+
+    _note.title = title;
+    _note.body = body;
 
     if (title == '' && body == '') {
       _notesRepository.delete(_note);
@@ -358,7 +372,7 @@ class _ManageNoteState extends State<ManageNote> {
         ),
       );
 
-      return true;
+      return false;
     }
   }
 }
