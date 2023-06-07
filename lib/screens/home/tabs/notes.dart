@@ -122,22 +122,23 @@ class _NotesTabState extends State<NotesTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (note.title != null)
+              if (note.title.isNotEmpty)
                 Text(
-                  note.title!,
+                  note.title,
                   style: TextStyle(
                     color: themeColor.shade400,
                   ),
                 ),
-              if (note.title != null) const SizedBox(height: 8.0),
-              Text(
-                _getTrimmedContent(note.body),
-                style: const TextStyle(
-                  fontSize: 16.0,
+              if (note.title.isNotEmpty) const SizedBox(height: 8.0),
+              if (note.body.isNotEmpty)
+                Text(
+                  _getTrimmedContent(note.body),
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
               if (note.date != null)
                 Text(
                   note.date!,

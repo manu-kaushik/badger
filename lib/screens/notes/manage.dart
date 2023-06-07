@@ -186,16 +186,16 @@ class _ManageNoteState extends State<ManageNote> {
         color: themeColor,
         onPressed: () {
           if (_mode == ManagementModes.add) {
-            _saveNote(context).then((bool isNoteSaved) {
-              if (isNoteSaved) {
+            _saveNote(context).then((bool isActionComplete) {
+              if (isActionComplete) {
                 Navigator.pop(context);
               }
             });
           }
 
           if (_mode == ManagementModes.edit) {
-            _updateNote(context).then((bool isNoteUpdated) {
-              if (isNoteUpdated) {
+            _updateNote(context).then((bool isActionComplete) {
+              if (isActionComplete) {
                 Navigator.pop(context);
               }
             });
@@ -302,32 +302,25 @@ class _ManageNoteState extends State<ManageNote> {
 
       _note = arguments['note'] as Note;
 
-      _titleController.text = _note.title ?? '';
+      _titleController.text = _note.title;
       _bodyController.text = _note.body;
     }
   }
 
   Future<bool> _saveNote(BuildContext context) async {
     int id = await _notesRepository.getLastInsertedId() + 1;
+
     String title = _titleController.text.trim();
     String body = _bodyController.text.trim();
 
-    if (title == '') {
-      SnackBar snackBar = getSnackBar('Note title cannot be empty');
+    if (title == '' && body == '') {
+      SnackBar snackBar = getSnackBar('Empty note discarded');
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
 
-      return false;
-    } else if (body == '') {
-      SnackBar snackBar = getSnackBar('Note body cannot be empty');
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
-
-      return false;
+      return true;
     } else {
       final note = Note(
         id: id,
@@ -343,25 +336,19 @@ class _ManageNoteState extends State<ManageNote> {
   }
 
   Future<bool> _updateNote(BuildContext context) async {
-    String title = _titleController.text;
-    String body = _bodyController.text;
+    String title = _titleController.text.trim();
+    String body = _bodyController.text.trim();
 
-    if (title == '') {
-      SnackBar snackBar = getSnackBar('Note title cannot be empty');
+    if (title == '' && body == '') {
+      _notesRepository.delete(_note);
 
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
-
-      return false;
-    } else if (body == '') {
-      SnackBar snackBar = getSnackBar('Note body cannot be empty');
+      SnackBar snackBar = getSnackBar('Note deleted');
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
 
-      return false;
+      return true;
     } else {
       await _notesRepository.update(
         _note.copyWith(

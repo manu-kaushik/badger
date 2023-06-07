@@ -6,14 +6,14 @@ String noteToJson(Note data) => json.encode(data.toJson());
 
 class Note {
   int id;
-  String? title;
+  String title;
   String body;
   String? date;
 
   Note({
     required this.id,
-    this.title,
-    required this.body,
+    this.title = '',
+    this.body = '',
     this.date,
   });
 
