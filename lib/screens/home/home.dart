@@ -48,7 +48,7 @@ class _HomeState extends State<Home> {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.note,
-            color: themeColor,
+            color: primaryColor,
           ),
           label: 'Notes',
           tooltip: 'Notes',
@@ -56,13 +56,13 @@ class _HomeState extends State<Home> {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.checklist_rounded,
-            color: themeColor,
+            color: primaryColor,
           ),
           label: 'Todos',
           tooltip: 'Todos',
         ),
       ],
-      backgroundColor: themeColor.shade50,
+      backgroundColor: primaryColor.shade50,
       showSelectedLabels: false,
       showUnselectedLabels: false,
       iconSize: 28,

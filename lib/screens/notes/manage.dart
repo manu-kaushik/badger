@@ -137,7 +137,7 @@ class _ManageNoteState extends State<ManageNote> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
-          color: themeColor.shade100,
+          color: primaryColor.shade100,
         ),
         child: SizedBox(
           height: 32.0,
@@ -242,7 +242,7 @@ class _ManageNoteState extends State<ManageNote> {
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: themeColor,
+                              color: primaryColor,
                               width: 2.0,
                             ),
                             borderRadius: BorderRadius.circular(4.0),
@@ -360,7 +360,7 @@ class _ManageNoteState extends State<ManageNote> {
         expands: true,
         decoration: InputDecoration(
           hintText: 'Start writing here...',
-          hintStyle: TextStyle(color: themeColor),
+          hintStyle: TextStyle(color: primaryColor),
           border: InputBorder.none,
         ),
       ),
@@ -386,13 +386,13 @@ class _ManageNoteState extends State<ManageNote> {
           styleSheet: MarkdownStyleSheet(
             blockSpacing: 12.0,
             code: TextStyle(
-              color: themeColor,
-              backgroundColor: themeColor.shade50,
+              color: primaryColor,
+              backgroundColor: primaryColor.shade50,
               fontFamily: 'SourceCodePro',
               fontWeight: FontWeight.w500,
             ),
             codeblockDecoration: BoxDecoration(
-              color: themeColor.shade50,
+              color: primaryColor.shade50,
               borderRadius: BorderRadius.circular(8.0),
             ),
             codeblockPadding:
@@ -418,10 +418,10 @@ class _ManageNoteState extends State<ManageNote> {
             offset: const Offset(0, kToolbarHeight + 8),
             icon: Icon(
               Icons.more_vert,
-              color: themeColor, // Set the desired color here
+              color: primaryColor, // Set the desired color here
             ),
             elevation: 0,
-            color: themeColor.shade50,
+            color: primaryColor.shade50,
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'copyNoteBody',
@@ -500,7 +500,7 @@ class _ManageNoteState extends State<ManageNote> {
       focusNode: _titleFocusNode,
       decoration: InputDecoration(
         hintText: 'Enter a title',
-        hintStyle: TextStyle(color: themeColor),
+        hintStyle: TextStyle(color: primaryColor),
         border: InputBorder.none,
       ),
       readOnly: _mode == ManagementModes.view,

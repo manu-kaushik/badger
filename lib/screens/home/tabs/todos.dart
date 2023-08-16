@@ -110,13 +110,13 @@ class _TodosTabState extends State<TodosTab> {
           return Center(
             child: Text(
               'Something went wrong!',
-              style: TextStyle(color: themeColor),
+              style: TextStyle(color: primaryColor),
             ),
           );
         } else {
           return Center(
             child: CircularProgressIndicator(
-              color: themeColor,
+              color: primaryColor,
               strokeWidth: 1,
             ),
           );
@@ -134,7 +134,7 @@ class _TodosTabState extends State<TodosTab> {
         children: [
           Icon(
             Icons.view_list_rounded,
-            color: themeColor.shade400,
+            color: primaryColor.shade400,
             size: 48.0,
           ),
           const SizedBox(
@@ -142,7 +142,7 @@ class _TodosTabState extends State<TodosTab> {
           ),
           Text(
             'No todos yet! Try adding one!',
-            style: TextStyle(color: themeColor),
+            style: TextStyle(color: primaryColor),
           ),
         ],
       ),
@@ -164,7 +164,7 @@ class _TodosTabState extends State<TodosTab> {
           Text(
             'Todos',
             style: TextStyle(
-              color: themeColor,
+              color: primaryColor,
             ),
           ),
         ],
@@ -174,10 +174,10 @@ class _TodosTabState extends State<TodosTab> {
           offset: const Offset(0, kToolbarHeight + 8),
           icon: Icon(
             Icons.more_vert,
-            color: themeColor, // Set the desired color here
+            color: primaryColor, // Set the desired color here
           ),
           elevation: 0,
-          color: themeColor.shade50,
+          color: primaryColor.shade50,
           itemBuilder: (context) => [
             const PopupMenuItem(
               value: 'clearCompleted',
@@ -206,7 +206,7 @@ class _TodosTabState extends State<TodosTab> {
         focusNode: _todoFocusNode,
         decoration: InputDecoration(
           hintText: 'Enter a todo',
-          hintStyle: TextStyle(color: themeColor),
+          hintStyle: TextStyle(color: primaryColor),
           border: InputBorder.none,
         ),
         readOnly: _mode == ManagementModes.view,
@@ -238,7 +238,7 @@ class _TodosTabState extends State<TodosTab> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        activeColor: themeColor.shade300,
+        activeColor: primaryColor.shade300,
       ),
     );
   }
@@ -263,7 +263,7 @@ class _TodosTabState extends State<TodosTab> {
           Text(
             todo.title,
             style: TextStyle(
-              color: todo.completed ? themeColor.shade300 : themeColor,
+              color: todo.completed ? primaryColor.shade300 : primaryColor,
               decoration: todo.completed ? TextDecoration.lineThrough : null,
             ),
           ),
@@ -275,7 +275,7 @@ class _TodosTabState extends State<TodosTab> {
             Text(
               todo.date!,
               style: TextStyle(
-                color: themeColor.shade300,
+                color: primaryColor.shade300,
                 fontSize: 12.0,
               ),
             )
@@ -291,7 +291,7 @@ class _TodosTabState extends State<TodosTab> {
         focusNode: _todoFocusNode,
         decoration: InputDecoration(
           hintText: 'Enter a todo',
-          hintStyle: TextStyle(color: themeColor),
+          hintStyle: TextStyle(color: primaryColor),
           border: InputBorder.none,
         ),
         readOnly: _mode == ManagementModes.view,
@@ -350,7 +350,7 @@ class _TodosTabState extends State<TodosTab> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        activeColor: themeColor.shade300,
+        activeColor: primaryColor.shade300,
       ),
     );
   }

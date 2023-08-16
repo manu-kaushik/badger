@@ -48,7 +48,7 @@ class _NotesTabState extends State<NotesTab> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(
-              color: themeColor,
+              color: primaryColor,
               strokeWidth: 1.0,
             ),
           );
@@ -56,7 +56,7 @@ class _NotesTabState extends State<NotesTab> {
           return Center(
             child: Text(
               'Something went wrong!',
-              style: TextStyle(color: themeColor),
+              style: TextStyle(color: primaryColor),
             ),
           );
         } else if (snapshot.data!.isEmpty) {
@@ -92,7 +92,7 @@ class _NotesTabState extends State<NotesTab> {
           Text(
             'Notes',
             style: TextStyle(
-              color: themeColor,
+              color: primaryColor,
             ),
           ),
         ],
@@ -116,7 +116,7 @@ class _NotesTabState extends State<NotesTab> {
       },
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-        color: themeColor.shade100,
+        color: primaryColor.shade100,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -126,7 +126,7 @@ class _NotesTabState extends State<NotesTab> {
                 Text(
                   note.title,
                   style: TextStyle(
-                    color: themeColor.shade400,
+                    color: primaryColor.shade400,
                   ),
                 ),
               if (note.title.isNotEmpty) const SizedBox(height: 8.0),
@@ -144,7 +144,7 @@ class _NotesTabState extends State<NotesTab> {
                   note.date!,
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    color: themeColor.shade300,
+                    color: primaryColor.shade300,
                     fontSize: 12.0,
                   ),
                 ),
@@ -162,7 +162,7 @@ class _NotesTabState extends State<NotesTab> {
         children: [
           Icon(
             Icons.note,
-            color: themeColor.shade400,
+            color: primaryColor.shade400,
             size: 48.0,
           ),
           const SizedBox(
@@ -170,7 +170,7 @@ class _NotesTabState extends State<NotesTab> {
           ),
           Text(
             'No notes yet! Try adding one!',
-            style: TextStyle(color: themeColor),
+            style: TextStyle(color: primaryColor),
           ),
         ],
       ),

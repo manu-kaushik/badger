@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:badger/utils/colors.dart';
 
 ThemeData theme = ThemeData(
-  primaryColor: themeColor,
-  primarySwatch: themeColor,
-  fontFamily: 'Quicksand',
+  primaryColor: primaryColor,
+  primarySwatch: primaryColor,
+  fontFamily: 'Inter',
   appBarTheme: AppBarTheme(
-    backgroundColor: themeColor.shade50,
+    backgroundColor: primaryColor,
     elevation: 0,
-    iconTheme: IconThemeData(color: themeColor),
+    iconTheme: const IconThemeData(color: Colors.white),
+    titleTextStyle: const TextStyle(color: Colors.white),
   ),
+  scaffoldBackgroundColor: primaryColor,
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: themeColor,
+    backgroundColor: secondaryColor,
     elevation: 0,
   ),
   snackBarTheme: SnackBarThemeData(
-    contentTextStyle: TextStyle(color: themeColor),
-    backgroundColor: themeColor.shade50,
+    contentTextStyle: TextStyle(color: secondaryColor),
+    backgroundColor: primaryColor.shade700,
   ),
 );

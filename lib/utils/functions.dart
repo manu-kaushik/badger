@@ -27,7 +27,7 @@ SnackBar getSnackBar(
     } else if (type == AlertTypes.info) {
       return Colors.blue;
     } else {
-      return themeColor;
+      return primaryColor;
     }
   }
 
