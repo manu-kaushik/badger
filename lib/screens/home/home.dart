@@ -44,11 +44,10 @@ class _HomeState extends State<Home> {
     return BottomNavigationBar(
       onTap: _onTabTapped,
       currentIndex: _currentIndex,
-      items: [
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(
             Icons.note,
-            color: primaryColor,
           ),
           label: 'Notes',
           tooltip: 'Notes',
@@ -56,17 +55,20 @@ class _HomeState extends State<Home> {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.checklist_rounded,
-            color: primaryColor,
           ),
           label: 'Todos',
           tooltip: 'Todos',
         ),
       ],
-      backgroundColor: primaryColor.shade50,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      iconSize: 28,
-      selectedIconTheme: const IconThemeData(size: 32),
+      backgroundColor: primaryColor,
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white,
+      selectedLabelStyle: const TextStyle(color: Colors.white),
+      unselectedLabelStyle: const TextStyle(color: Colors.white),
+      selectedIconTheme: const IconThemeData(color: Colors.white, size: 32),
+      unselectedIconTheme: const IconThemeData(color: Colors.white, size: 32),
     );
   }
 

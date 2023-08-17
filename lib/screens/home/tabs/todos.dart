@@ -4,6 +4,7 @@ import 'package:badger/repositories/todos.dart';
 import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/constants.dart';
 import 'package:badger/utils/functions.dart';
+import 'package:timeago/timeago.dart';
 
 class TodosTab extends StatefulWidget {
   const TodosTab({Key? key}) : super(key: key);
@@ -56,9 +57,57 @@ class _TodosTabState extends State<TodosTab> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: _buildAppBar(),
-        body: _buildTodosList(),
+        body: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                expandedHeight: 144.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    'Todos',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  titlePadding: const EdgeInsets.only(bottom: 16.0),
+                  expandedTitleScale: 2.0,
+                ),
+                actions: [
+                  PopupMenuButton<String>(
+                    offset: const Offset(0, kToolbarHeight + 8),
+                    icon: const Icon(
+                      Icons.more_vert,
+                      color: Colors.white, // Set the desired color here
+                    ),
+                    elevation: 0,
+                    color: primaryColor.shade400,
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'clearCompleted',
+                        child: Text('Clear Completed'),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      if (value == 'clearCompleted') {
+                        _todosRepository.deleteCompletedTodos();
+
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ],
+              ),
+              SliverList.list(
+                children: [
+                  const SizedBox(
+                    height: 16.0,
+                  ),
+                  _buildTodosList(),
+                ],
+              ),
+            ],
+          ),
+        ),
         floatingActionButton: _buildAddTodoBtn(),
       ),
     );
@@ -74,7 +123,7 @@ class _TodosTabState extends State<TodosTab> {
             _mode = ManagementModes.add;
           });
         },
-        child: const Icon(Icons.add_task),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -87,7 +136,9 @@ class _TodosTabState extends State<TodosTab> {
           final todos = snapshot.data!;
 
           return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 48.0),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 16.0),
             itemCount: todos.isEmpty
                 ? 1
                 : (_mode == ManagementModes.add
@@ -107,16 +158,15 @@ class _TodosTabState extends State<TodosTab> {
             },
           );
         } else if (snapshot.hasError) {
-          return Center(
+          return const Center(
             child: Text(
               'Something went wrong!',
-              style: TextStyle(color: primaryColor),
             ),
           );
         } else {
           return Center(
             child: CircularProgressIndicator(
-              color: primaryColor,
+              color: primaryColor.shade400,
               strokeWidth: 1,
             ),
           );
@@ -127,10 +177,11 @@ class _TodosTabState extends State<TodosTab> {
 
   Container _getNoTodosView(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
       alignment: Alignment.center,
+      margin: const EdgeInsets.symmetric(
+        vertical: 128.0,
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.view_list_rounded,
@@ -140,59 +191,11 @@ class _TodosTabState extends State<TodosTab> {
           const SizedBox(
             height: 16.0,
           ),
-          Text(
+          const Text(
             'No todos yet! Try adding one!',
-            style: TextStyle(color: primaryColor),
           ),
         ],
       ),
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: Row(
-        children: [
-          Image.asset(
-            'assets/images/icons/app_icon.png',
-            width: 36.0,
-            height: 36.0,
-          ),
-          const SizedBox(
-            width: 16.0,
-          ),
-          Text(
-            'Todos',
-            style: TextStyle(
-              color: primaryColor,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        PopupMenuButton<String>(
-          offset: const Offset(0, kToolbarHeight + 8),
-          icon: Icon(
-            Icons.more_vert,
-            color: primaryColor, // Set the desired color here
-          ),
-          elevation: 0,
-          color: primaryColor.shade50,
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'clearCompleted',
-              child: Text('Clear Completed'),
-            ),
-          ],
-          onSelected: (value) {
-            if (value == 'clearCompleted') {
-              _todosRepository.deleteCompletedTodos();
-
-              setState(() {});
-            }
-          },
-        ),
-      ],
     );
   }
 
@@ -204,9 +207,9 @@ class _TodosTabState extends State<TodosTab> {
       title: TextField(
         controller: _todoController,
         focusNode: _todoFocusNode,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: 'Enter a todo',
-          hintStyle: TextStyle(color: primaryColor),
+          hintStyle: TextStyle(color: Colors.white),
           border: InputBorder.none,
         ),
         readOnly: _mode == ManagementModes.view,
@@ -215,7 +218,7 @@ class _TodosTabState extends State<TodosTab> {
             final todo = Todo(
               id: await _todosRepository.getLastInsertedId() + 1,
               title: todoTitle,
-              date: getCurrentTimestamp(),
+              date: DateTime.now().toString(),
             );
 
             _todosRepository.insert(todo);
@@ -237,8 +240,11 @@ class _TodosTabState extends State<TodosTab> {
         onChanged: (_) async {},
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
+          side: const BorderSide(color: Colors.white, width: 2.0),
         ),
-        activeColor: primaryColor.shade300,
+        activeColor: secondaryColor.shade400,
+        fillColor: const MaterialStatePropertyAll(Colors.white),
+        checkColor: secondaryColor,
       ),
     );
   }
@@ -263,7 +269,7 @@ class _TodosTabState extends State<TodosTab> {
           Text(
             todo.title,
             style: TextStyle(
-              color: todo.completed ? primaryColor.shade300 : primaryColor,
+              color: todo.completed ? Colors.white54 : Colors.white,
               decoration: todo.completed ? TextDecoration.lineThrough : null,
             ),
           ),
@@ -273,7 +279,7 @@ class _TodosTabState extends State<TodosTab> {
             ),
           if (todo.date != null)
             Text(
-              todo.date!,
+              format(DateTime.parse(todo.date!)),
               style: TextStyle(
                 color: primaryColor.shade300,
                 fontSize: 12.0,
@@ -289,9 +295,9 @@ class _TodosTabState extends State<TodosTab> {
       child = TextField(
         controller: _todoController,
         focusNode: _todoFocusNode,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: 'Enter a todo',
-          hintStyle: TextStyle(color: primaryColor),
+          hintStyle: TextStyle(color: Colors.white),
           border: InputBorder.none,
         ),
         readOnly: _mode == ManagementModes.view,
@@ -300,7 +306,7 @@ class _TodosTabState extends State<TodosTab> {
             _todosRepository.update(
               todo.copyWith(
                 title: todoTitle,
-                date: getCurrentTimestamp(),
+                date: DateTime.now().toString(),
               ),
             );
           } else {
@@ -337,7 +343,7 @@ class _TodosTabState extends State<TodosTab> {
           await _todosRepository.update(
             todo.copyWith(
               completed: value,
-              date: getCurrentTimestamp(),
+              date: DateTime.now().toString(),
             ),
           );
 
@@ -350,7 +356,9 @@ class _TodosTabState extends State<TodosTab> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        activeColor: primaryColor.shade300,
+        activeColor: secondaryColor.shade400,
+        fillColor: const MaterialStatePropertyAll(Colors.white),
+        checkColor: secondaryColor,
       ),
     );
   }

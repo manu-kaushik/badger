@@ -1,11 +1,11 @@
+import 'package:badger/utils/colors.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:badger/models/note.dart';
 import 'package:badger/repositories/notes.dart';
-import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/constants.dart';
 import 'package:badger/utils/functions.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ManageNote extends StatefulWidget {
   const ManageNote({Key? key}) : super(key: key);
@@ -60,36 +60,12 @@ class _ManageNoteState extends State<ManageNote> {
       onWillPop: () async {
         if (_titleFocusNode.hasFocus) {
           _titleFocusNode.unfocus();
-        }
-
-        if (_bodyFocusNode.hasFocus) {
-          _bodyFocusNode.unfocus();
-        }
-
-        if (_mode == ManagementModes.add) {
-          bool shouldClose = await _saveNote(context);
-
-          if (shouldClose) {
-            return true;
-          }
-
-          setState(() {
-            _mode = ManagementModes.view;
-          });
 
           return false;
         }
 
-        if (_mode == ManagementModes.edit) {
-          bool shouldClose = await _updateNote(context);
-
-          if (shouldClose) {
-            return true;
-          }
-
-          setState(() {
-            _mode = ManagementModes.view;
-          });
+        if (_bodyFocusNode.hasFocus) {
+          _bodyFocusNode.unfocus();
 
           return false;
         }
@@ -99,221 +75,197 @@ class _ManageNoteState extends State<ManageNote> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: _buildAppBar(context),
-        body: _buildBody(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTitleInput(),
+            _mode != ManagementModes.view
+                ? Flexible(
+                    child: _getBodyInput(),
+                  )
+                : _buildMarkdownPreview(),
+            if (_mode != ManagementModes.view) _getFormattingOptionsBar(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildBody() {
-    return _mode == ManagementModes.view
-        ? GestureDetector(
-            onTap: () {
-              if (_mode == ManagementModes.view) {
-                setState(() {
-                  _mode = ManagementModes.edit;
-
-                  _bodyFocusNode.requestFocus();
-                });
-              }
-            },
-            child: _buildMarkdownPreview(),
-          )
-        : Stack(
-            children: [
-              _getBodyInput(),
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: _getFormattingOptionsBar(),
-              ),
-            ],
-          );
-  }
-
   Widget _getFormattingOptionsBar() {
-    return Visibility(
-      visible: !_titleFocusNode.hasFocus && _mode != ManagementModes.view,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        decoration: BoxDecoration(
-          color: primaryColor.shade100,
-        ),
-        child: SizedBox(
-          height: 32.0,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.bold);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.format_bold_rounded,
-                    ),
+    return SizedBox(
+      height: 32.0,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.bold);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.format_bold_rounded,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.italic);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.format_italic_rounded,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.strikeThrough);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.format_strikethrough_rounded,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.blockQuote);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.format_quote_rounded,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.divider);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Text(
+                  '---',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.italic);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.format_italic_rounded,
-                    ),
-                  ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.inlineCode);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.code_rounded,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.strikeThrough);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.format_strikethrough_rounded,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.blockQuote);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.format_quote_rounded,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.divider);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Text(
-                      '---',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.code);
+              },
+              child: Container(
+                width: 24.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(4.0),
                       ),
                     ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.inlineCode);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.code_rounded,
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: const Icon(
+                        Icons.code_rounded,
+                        size: 16.0,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.code);
-                  },
-                  child: Container(
-                    width: 24.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: primaryColor,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.bottomCenter,
-                          child: const Icon(
-                            Icons.code_rounded,
-                            size: 16.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.unorderedList);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.format_list_bulleted_rounded,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.orderedList);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.format_list_numbered_outlined,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.checkList);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.checklist_rounded,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _formatAndUpdateBody(MarkdownStyles.image);
-                  },
-                  child: Container(
-                    width: 32.0,
-                    height: 24.0,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: const Icon(
-                      Icons.image,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.unorderedList);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.format_list_bulleted_rounded,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.orderedList);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.format_list_numbered_outlined,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.checkList);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.checklist_rounded,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _formatAndUpdateBody(MarkdownStyles.image);
+              },
+              child: Container(
+                width: 32.0,
+                height: 24.0,
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Icon(
+                  Icons.image,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -358,70 +310,41 @@ class _ManageNoteState extends State<ManageNote> {
         focusNode: _bodyFocusNode,
         maxLines: null,
         expands: true,
-        decoration: InputDecoration(
-          hintText: 'Start writing here...',
-          hintStyle: TextStyle(color: primaryColor),
+        decoration: const InputDecoration(
+          hintText: 'Start from here...',
+          hintStyle: TextStyle(
+            color: Colors.white54,
+          ),
           border: InputBorder.none,
         ),
-      ),
-    );
-  }
-
-  Widget _buildMarkdownPreview() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 24.0,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-            width: 1,
-          ),
-        ),
-        child: MarkdownBody(
-          data: _note.body,
-          fitContent: false,
-          styleSheet: MarkdownStyleSheet(
-            blockSpacing: 12.0,
-            code: TextStyle(
-              color: primaryColor,
-              backgroundColor: primaryColor.shade50,
-              fontFamily: 'SourceCodePro',
-              fontWeight: FontWeight.w500,
-            ),
-            codeblockDecoration: BoxDecoration(
-              color: primaryColor.shade50,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            codeblockPadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            blockquoteDecoration: BoxDecoration(
-              color: Colors.amber.shade50,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            blockquotePadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          ),
-        ),
+        cursorColor: Colors.white54,
+        cursorOpacityAnimates: false,
       ),
     );
   }
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      title: _buildTitleInput(),
+      leading: _mode != ManagementModes.view
+          ? IconButton(
+              icon: const Icon(
+                Icons.close,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : null,
       actions: [
         if (_mode == ManagementModes.view)
           PopupMenuButton<String>(
             offset: const Offset(0, kToolbarHeight + 8),
-            icon: Icon(
+            icon: const Icon(
               Icons.more_vert,
-              color: primaryColor, // Set the desired color here
+              color: Colors.white, // Set the desired color here
             ),
             elevation: 0,
-            color: primaryColor.shade50,
+            color: primaryColor.shade400,
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'copyNoteBody',
@@ -442,35 +365,40 @@ class _ManageNoteState extends State<ManageNote> {
               }
             },
           ),
+        if (_mode != ManagementModes.view)
+          IconButton(
+            icon: const Icon(
+              Icons.done,
+            ),
+            onPressed: () {
+              if (_mode == ManagementModes.add) {
+                _saveNote(context);
+              }
+
+              if (_mode == ManagementModes.edit) {
+                _updateNote(context);
+              }
+
+              Navigator.pop(context);
+            },
+          ),
       ],
     );
   }
 
   void _showDeleteNoteConfirmation(BuildContext context) {
-    if (_mode == ManagementModes.add) {
-      SnackBar snackBar = getSnackBar(
-        'Note discarded',
-      );
+    SnackBar snackBar = getSnackBar(
+      'Are you sure you want to delete this note?',
+      action: SnackBarAction(
+          label: 'Delete',
+          textColor: Colors.red,
+          onPressed: () {
+            _notesRepository.delete(_note).then((_) => Navigator.pop(context));
+          }),
+      duration: const Duration(seconds: 5),
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-      Navigator.pop(context);
-    } else {
-      SnackBar snackBar = getSnackBar(
-        'Are you sure you want to delete this note?',
-        action: SnackBarAction(
-            label: 'Delete',
-            textColor: Colors.red,
-            onPressed: () {
-              _notesRepository
-                  .delete(_note)
-                  .then((_) => Navigator.pop(context));
-            }),
-        duration: const Duration(seconds: 5),
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void _copyNoteBody(BuildContext context) {
@@ -494,28 +422,81 @@ class _ManageNoteState extends State<ManageNote> {
     }
   }
 
-  TextField _buildTitleInput() {
-    return TextField(
-      controller: _titleController,
-      focusNode: _titleFocusNode,
-      decoration: InputDecoration(
-        hintText: 'Enter a title',
-        hintStyle: TextStyle(color: primaryColor),
-        border: InputBorder.none,
-      ),
-      readOnly: _mode == ManagementModes.view,
+  Widget _buildMarkdownPreview() {
+    return GestureDetector(
       onTap: () {
-        if (_mode == ManagementModes.view) {
-          setState(() {
-            _mode = ManagementModes.edit;
-          });
-        }
-      },
-      onSubmitted: (_) {
         setState(() {
-          _bodyFocusNode.requestFocus();
+          if (_mode == ManagementModes.view) {
+            _mode = ManagementModes.edit;
+          }
         });
       },
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 16.0,
+            horizontal: 24.0,
+          ),
+          height: screenSize(context).height * 2 / 3,
+          child: MarkdownBody(
+            data: _note.body,
+            fitContent: false,
+            styleSheet: MarkdownStyleSheet(
+              blockSpacing: 12.0,
+              code: TextStyle(
+                backgroundColor: primaryColor.shade400,
+                fontFamily: 'SourceCodePro',
+                fontWeight: FontWeight.w500,
+              ),
+              codeblockDecoration: BoxDecoration(
+                color: primaryColor.shade50,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              codeblockPadding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+              blockquoteDecoration: BoxDecoration(
+                color: Colors.amber.shade50,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              blockquotePadding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitleInput() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
+      child: TextField(
+        controller: _titleController,
+        focusNode: _titleFocusNode,
+        decoration: InputDecoration(
+          hintText: 'Enter a title',
+          hintStyle: Theme.of(context)
+              .textTheme
+              .headlineMedium!
+              .copyWith(color: Colors.white54),
+          border: InputBorder.none,
+        ),
+        style: Theme.of(context).textTheme.headlineMedium,
+        cursorColor: Colors.white54,
+        cursorOpacityAnimates: false,
+        onTap: () {
+          setState(() {
+            if (_mode == ManagementModes.view) {
+              _mode = ManagementModes.edit;
+            }
+          });
+        },
+        onSubmitted: (_) {
+          setState(() {
+            _bodyFocusNode.requestFocus();
+          });
+        },
+      ),
     );
   }
 
@@ -552,7 +533,7 @@ class _ManageNoteState extends State<ManageNote> {
       id: id,
       title: title,
       body: body,
-      date: getCurrentTimestamp(),
+      date: DateTime.now().toString(),
     );
 
     if (title == '' && body == '') {
@@ -594,7 +575,7 @@ class _ManageNoteState extends State<ManageNote> {
         _note.copyWith(
           title: title,
           body: body,
-          date: getCurrentTimestamp(),
+          date: DateTime.now().toString(),
         ),
       );
 

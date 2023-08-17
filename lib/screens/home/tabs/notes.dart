@@ -4,6 +4,8 @@ import 'package:badger/repositories/notes.dart';
 import 'package:badger/utils/colors.dart';
 
 import 'package:badger/utils/constants.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:timeago/timeago.dart';
 
 class NotesTab extends StatefulWidget {
   const NotesTab({Key? key}) : super(key: key);
@@ -18,9 +20,33 @@ class _NotesTabState extends State<NotesTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _getAppBar(),
-      body: _buildNotesList(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              expandedHeight: 144.0,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(
+                  'Notes',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                titlePadding: const EdgeInsets.only(bottom: 16.0),
+                expandedTitleScale: 2.0,
+              ),
+            ),
+            SliverList.list(
+              children: [
+                const SizedBox(
+                  height: 16.0,
+                ),
+                _buildNotesList(),
+              ],
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: _getAddNoteBtn(context),
     );
   }
@@ -37,7 +63,7 @@ class _NotesTabState extends State<NotesTab> {
           },
         ).then((_) => setState(() {}));
       },
-      child: const Icon(Icons.edit_note),
+      child: const Icon(Icons.add),
     );
   }
 
@@ -48,15 +74,14 @@ class _NotesTabState extends State<NotesTab> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(
-              color: primaryColor,
+              color: primaryColor.shade400,
               strokeWidth: 1.0,
             ),
           );
         } else if (snapshot.hasError) {
-          return Center(
+          return const Center(
             child: Text(
               'Something went wrong!',
-              style: TextStyle(color: primaryColor),
             ),
           );
         } else if (snapshot.data!.isEmpty) {
@@ -65,7 +90,9 @@ class _NotesTabState extends State<NotesTab> {
           final notes = snapshot.data!;
 
           return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 48.0),
+            padding: const EdgeInsets.only(bottom: 16.0),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: notes.length,
             itemBuilder: (context, index) {
               final note = notes[index];
@@ -74,29 +101,6 @@ class _NotesTabState extends State<NotesTab> {
           );
         }
       },
-    );
-  }
-
-  AppBar _getAppBar() {
-    return AppBar(
-      title: Row(
-        children: [
-          Image.asset(
-            'assets/images/icons/app_icon.png',
-            width: 36.0,
-            height: 36.0,
-          ),
-          const SizedBox(
-            width: 16.0,
-          ),
-          Text(
-            'Notes',
-            style: TextStyle(
-              color: primaryColor,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -114,9 +118,12 @@ class _NotesTabState extends State<NotesTab> {
 
         setState(() {});
       },
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-        color: primaryColor.shade100,
+      child: Container(
+        decoration: BoxDecoration(
+          color: primaryColor.shade400,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        margin: const EdgeInsets.only(bottom: 12.0),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -125,28 +132,16 @@ class _NotesTabState extends State<NotesTab> {
               if (note.title.isNotEmpty)
                 Text(
                   note.title,
-                  style: TextStyle(
-                    color: primaryColor.shade400,
-                  ),
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               if (note.title.isNotEmpty) const SizedBox(height: 8.0),
               if (note.body.isNotEmpty)
-                Text(
-                  _getTrimmedContent(note.body),
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                MarkdownBody(
+                  data: _getTrimmedContent(note.body),
                 ),
               if (note.date != null)
                 Text(
-                  note.date!,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: primaryColor.shade300,
-                    fontSize: 12.0,
-                  ),
+                  format(DateTime.parse(note.date!)),
                 ),
             ],
           ),
@@ -156,9 +151,12 @@ class _NotesTabState extends State<NotesTab> {
   }
 
   Widget _getNoNotesView() {
-    return Center(
+    return Container(
+      alignment: Alignment.center,
+      margin: const EdgeInsets.symmetric(
+        vertical: 128.0,
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.note,
@@ -168,9 +166,8 @@ class _NotesTabState extends State<NotesTab> {
           const SizedBox(
             height: 16.0,
           ),
-          Text(
+          const Text(
             'No notes yet! Try adding one!',
-            style: TextStyle(color: primaryColor),
           ),
         ],
       ),

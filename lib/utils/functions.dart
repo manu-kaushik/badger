@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:badger/utils/colors.dart';
-import 'package:intl/intl.dart';
 
 import 'constants.dart';
 
@@ -36,9 +35,9 @@ SnackBar getSnackBar(
   return SnackBar(
     content: Text(
       message,
-      style: TextStyle(color: color),
+      style: const TextStyle(color: Colors.white),
     ),
-    backgroundColor: color.shade50,
+    backgroundColor: color,
     action: action,
     duration: duration ?? const Duration(milliseconds: 4000),
     elevation: elevation,
@@ -46,13 +45,6 @@ SnackBar getSnackBar(
 }
 
 Size screenSize(context) => MediaQuery.of(context).size;
-
-String getCurrentTimestamp() {
-  DateTime currentDate = DateTime.now();
-  String formattedDate = DateFormat('d MMMM, yyyy hh:mm a').format(currentDate);
-
-  return formattedDate;
-}
 
 String textToMarkdown(style, text) {
   if (style == MarkdownStyles.bold) {
