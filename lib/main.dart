@@ -21,8 +21,9 @@ class Main extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: appName,
-      darkTheme: theme,
-      themeMode: ThemeMode.dark,
+      theme: theme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       routes: {
         homeRoute: (context) => const Home(),
         manageNoteRoute: (context) => const ManageNote(),

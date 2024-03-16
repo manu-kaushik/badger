@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:badger/utils/colors.dart';
 
 import 'constants.dart';
 
@@ -16,28 +15,10 @@ SnackBar getSnackBar(
   Duration? duration,
   double? elevation = 0,
 }) {
-  MaterialColor getColor() {
-    if (type == AlertTypes.success) {
-      return Colors.green;
-    } else if (type == AlertTypes.warn) {
-      return Colors.orange;
-    } else if (type == AlertTypes.error) {
-      return Colors.red;
-    } else if (type == AlertTypes.info) {
-      return Colors.blue;
-    } else {
-      return primaryColor;
-    }
-  }
-
-  MaterialColor color = getColor();
-
   return SnackBar(
     content: Text(
       message,
-      style: const TextStyle(color: Colors.white),
     ),
-    backgroundColor: color,
     action: action,
     duration: duration ?? const Duration(milliseconds: 4000),
     elevation: elevation,

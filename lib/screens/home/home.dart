@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:badger/screens/home/tabs/notes.dart';
 import 'package:badger/screens/home/tabs/todos.dart';
-import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/local_storage.dart';
+import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -60,15 +58,10 @@ class _HomeState extends State<Home> {
           tooltip: 'Todos',
         ),
       ],
-      backgroundColor: primaryColor,
       showSelectedLabels: true,
       showUnselectedLabels: true,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white,
-      selectedLabelStyle: const TextStyle(color: Colors.white),
-      unselectedLabelStyle: const TextStyle(color: Colors.white),
-      selectedIconTheme: const IconThemeData(color: Colors.white, size: 32),
-      unselectedIconTheme: const IconThemeData(color: Colors.white, size: 32),
+      selectedIconTheme: const IconThemeData(size: 32),
+      unselectedIconTheme: const IconThemeData(size: 32),
     );
   }
 

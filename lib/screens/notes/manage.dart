@@ -1,14 +1,13 @@
-import 'package:badger/utils/colors.dart';
-import 'package:clipboard/clipboard.dart';
-import 'package:flutter/material.dart';
 import 'package:badger/models/note.dart';
 import 'package:badger/repositories/notes.dart';
 import 'package:badger/utils/constants.dart';
 import 'package:badger/utils/functions.dart';
+import 'package:clipboard/clipboard.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ManageNote extends StatefulWidget {
-  const ManageNote({Key? key}) : super(key: key);
+  const ManageNote({super.key});
 
   @override
   State<ManageNote> createState() => _ManageNoteState();
@@ -56,23 +55,19 @@ class _ManageNoteState extends State<ManageNote> {
     _setNote(context);
     _setInitialInputFocus();
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (_titleFocusNode.hasFocus) {
-          _titleFocusNode.unfocus();
+    return PopScope(
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          if (_titleFocusNode.hasFocus) {
+            _titleFocusNode.unfocus();
+          }
 
-          return false;
+          if (_bodyFocusNode.hasFocus) {
+            _bodyFocusNode.unfocus();
+          }
+
+          ScaffoldMessenger.of(context).clearSnackBars();
         }
-
-        if (_bodyFocusNode.hasFocus) {
-          _bodyFocusNode.unfocus();
-
-          return false;
-        }
-
-        ScaffoldMessenger.of(context).clearSnackBars();
-
-        return true;
       },
       child: Scaffold(
         appBar: _buildAppBar(context),
@@ -196,7 +191,6 @@ class _ManageNoteState extends State<ManageNote> {
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Colors.white,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(4.0),
@@ -312,12 +306,9 @@ class _ManageNoteState extends State<ManageNote> {
         expands: true,
         decoration: const InputDecoration(
           hintText: 'Start from here...',
-          hintStyle: TextStyle(
-            color: Colors.white54,
-          ),
+          hintStyle: TextStyle(),
           border: InputBorder.none,
         ),
-        cursorColor: Colors.white54,
         cursorOpacityAnimates: false,
       ),
     );
@@ -341,10 +332,8 @@ class _ManageNoteState extends State<ManageNote> {
             offset: const Offset(0, kToolbarHeight + 8),
             icon: const Icon(
               Icons.more_vert,
-              color: Colors.white, // Set the desired color here
             ),
             elevation: 0,
-            color: primaryColor.shade400,
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'copyNoteBody',
@@ -391,7 +380,6 @@ class _ManageNoteState extends State<ManageNote> {
       'Are you sure you want to delete this note?',
       action: SnackBarAction(
           label: 'Delete',
-          textColor: Colors.red,
           onPressed: () {
             _notesRepository.delete(_note).then((_) => Navigator.pop(context));
           }),
@@ -443,19 +431,16 @@ class _ManageNoteState extends State<ManageNote> {
             fitContent: false,
             styleSheet: MarkdownStyleSheet(
               blockSpacing: 12.0,
-              code: TextStyle(
-                backgroundColor: primaryColor.shade400,
+              code: const TextStyle(
                 fontFamily: 'SourceCodePro',
                 fontWeight: FontWeight.w500,
               ),
               codeblockDecoration: BoxDecoration(
-                color: primaryColor.shade50,
                 borderRadius: BorderRadius.circular(8.0),
               ),
               codeblockPadding:
                   const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
               blockquoteDecoration: BoxDecoration(
-                color: Colors.amber.shade50,
                 borderRadius: BorderRadius.circular(8.0),
               ),
               blockquotePadding:
@@ -475,14 +460,10 @@ class _ManageNoteState extends State<ManageNote> {
         focusNode: _titleFocusNode,
         decoration: InputDecoration(
           hintText: 'Enter a title',
-          hintStyle: Theme.of(context)
-              .textTheme
-              .headlineMedium!
-              .copyWith(color: Colors.white54),
+          hintStyle: Theme.of(context).textTheme.headlineMedium,
           border: InputBorder.none,
         ),
         style: Theme.of(context).textTheme.headlineMedium,
-        cursorColor: Colors.white54,
         cursorOpacityAnimates: false,
         onTap: () {
           setState(() {

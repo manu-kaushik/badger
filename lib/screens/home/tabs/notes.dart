@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:badger/models/note.dart';
 import 'package:badger/repositories/notes.dart';
-import 'package:badger/utils/colors.dart';
-
 import 'package:badger/utils/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:timeago/timeago.dart';
 
 class NotesTab extends StatefulWidget {
-  const NotesTab({Key? key}) : super(key: key);
+  const NotesTab({super.key});
 
   @override
   State<NotesTab> createState() => _NotesTabState();
@@ -72,9 +70,8 @@ class _NotesTabState extends State<NotesTab> {
       future: _notesRepository.getAll(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(
-              color: primaryColor.shade400,
               strokeWidth: 1.0,
             ),
           );
@@ -120,7 +117,6 @@ class _NotesTabState extends State<NotesTab> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: primaryColor.shade400,
           borderRadius: BorderRadius.circular(16.0),
         ),
         margin: const EdgeInsets.only(bottom: 12.0),
@@ -156,17 +152,16 @@ class _NotesTabState extends State<NotesTab> {
       margin: const EdgeInsets.symmetric(
         vertical: 128.0,
       ),
-      child: Column(
+      child: const Column(
         children: [
           Icon(
             Icons.note,
-            color: primaryColor.shade400,
             size: 48.0,
           ),
-          const SizedBox(
+          SizedBox(
             height: 16.0,
           ),
-          const Text(
+          Text(
             'No notes yet! Try adding one!',
           ),
         ],
