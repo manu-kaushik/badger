@@ -88,103 +88,166 @@ class _ManageNoteState extends State<ManageNote> {
   }
 
   Widget _getFormattingOptionsBar() {
-    return SizedBox(
-      height: 32.0,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.bold);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.format_bold_rounded,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.bold);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.format_bold_rounded,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.italic);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.format_italic_rounded,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.strikeThrough);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.format_strikethrough_rounded,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.blockQuote);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.format_quote_rounded,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.divider);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: const Text(
+                '---',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.italic);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.format_italic_rounded,
-                ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.inlineCode);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.code_rounded,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.strikeThrough);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.format_strikethrough_rounded,
-                ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.code);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.blockQuote);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.format_quote_rounded,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.divider);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Text(
-                  '---',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.inlineCode);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.code_rounded,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.code);
-              },
-              child: Container(
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: SizedBox(
                 width: 24.0,
                 height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -192,6 +255,10 @@ class _ManageNoteState extends State<ManageNote> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           width: 2.0,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black54
+                                  : Colors.grey.shade300,
                         ),
                         borderRadius: BorderRadius.circular(4.0),
                       ),
@@ -207,60 +274,100 @@ class _ManageNoteState extends State<ManageNote> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.unorderedList);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.format_list_bulleted_rounded,
-                ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.unorderedList);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.format_list_bulleted_rounded,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.orderedList);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.format_list_numbered_outlined,
-                ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.orderedList);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.format_list_numbered_outlined,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.checkList);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.checklist_rounded,
-                ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.checkList);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.checklist_rounded,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                _formatAndUpdateBody(MarkdownStyles.image);
-              },
-              child: Container(
-                width: 32.0,
-                height: 24.0,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const Icon(
-                  Icons.image,
-                ),
+          ),
+          GestureDetector(
+            onTap: () {
+              _formatAndUpdateBody(MarkdownStyles.image);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey.shade300
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.image,
+                size: 24.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black54
+                    : Colors.white,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

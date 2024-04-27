@@ -1,9 +1,10 @@
 import 'package:badger/models/note.dart';
 import 'package:badger/repositories/notes.dart';
+import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/constants.dart';
+import 'package:badger/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:timeago/timeago.dart';
 
 class NotesTab extends StatefulWidget {
   const NotesTab({super.key});
@@ -33,6 +34,7 @@ class _NotesTabState extends State<NotesTab> {
                 titlePadding: const EdgeInsets.only(bottom: 16.0),
                 expandedTitleScale: 2.0,
               ),
+              surfaceTintColor: Colors.transparent,
             ),
             SliverList.list(
               children: [
@@ -117,9 +119,17 @@ class _NotesTabState extends State<NotesTab> {
       },
       child: Container(
         decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.black54,
           borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: primaryColor.shade200,
+            ),
+          ],
         ),
-        margin: const EdgeInsets.only(bottom: 12.0),
+        margin: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 12.0),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -137,7 +147,7 @@ class _NotesTabState extends State<NotesTab> {
                 ),
               if (note.date != null)
                 Text(
-                  format(DateTime.parse(note.date!)),
+                  formatDateToTimeAgo(note.date!),
                 ),
             ],
           ),

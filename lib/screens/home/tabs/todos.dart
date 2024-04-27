@@ -1,9 +1,9 @@
 import 'package:badger/models/todo.dart';
 import 'package:badger/repositories/todos.dart';
+import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/constants.dart';
 import 'package:badger/utils/functions.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart';
 
 class TodosTab extends StatefulWidget {
   const TodosTab({super.key});
@@ -61,6 +61,7 @@ class _TodosTabState extends State<TodosTab> {
               SliverAppBar(
                 pinned: true,
                 expandedHeight: 144.0,
+                surfaceTintColor: Colors.transparent,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
                     'Todos',
@@ -75,7 +76,7 @@ class _TodosTabState extends State<TodosTab> {
                     icon: const Icon(
                       Icons.more_vert, // Set the desired color here
                     ),
-                    elevation: 0,
+                    elevation: 4,
                     itemBuilder: (context) => [
                       const PopupMenuItem(
                         value: 'clearCompleted',
@@ -192,53 +193,67 @@ class _TodosTabState extends State<TodosTab> {
     );
   }
 
-  ListTile _getTodoInput(BuildContext context) {
+  Widget _getTodoInput(BuildContext context) {
     _todoFocusNode.requestFocus();
 
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: TextField(
-        controller: _todoController,
-        focusNode: _todoFocusNode,
-        decoration: const InputDecoration(
-          hintText: 'Enter a todo',
-          border: InputBorder.none,
-        ),
-        readOnly: _mode == ManagementModes.view,
-        onSubmitted: (todoTitle) async {
-          if (todoTitle.isNotEmpty) {
-            final todo = Todo(
-              id: await _todosRepository.getLastInsertedId() + 1,
-              title: todoTitle,
-              date: DateTime.now().toString(),
-            );
-
-            _todosRepository.insert(todo);
-          } else {
-            SnackBar snackBar = getSnackBar('Empty todo discarded');
-
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-
-          setState(() {
-            _mode = ManagementModes.view;
-          });
-
-          _todoController.clear();
-        },
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : Colors.black54,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.shade200,
+          ),
+        ],
       ),
-      leading: Checkbox(
-        value: false,
-        onChanged: (_) async {},
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          side: const BorderSide(width: 2.0),
+      margin: const EdgeInsets.only(bottom: 8.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: TextField(
+          controller: _todoController,
+          focusNode: _todoFocusNode,
+          decoration: const InputDecoration(
+            hintText: 'Enter a todo',
+            border: InputBorder.none,
+          ),
+          readOnly: _mode == ManagementModes.view,
+          onSubmitted: (todoTitle) async {
+            if (todoTitle.isNotEmpty) {
+              final todo = Todo(
+                id: await _todosRepository.getLastInsertedId() + 1,
+                title: todoTitle,
+                date: DateTime.now().toString(),
+              );
+
+              _todosRepository.insert(todo);
+            } else {
+              SnackBar snackBar = getSnackBar('Empty todo discarded');
+
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+
+            setState(() {
+              _mode = ManagementModes.view;
+            });
+
+            _todoController.clear();
+          },
+        ),
+        leading: Checkbox(
+          value: false,
+          onChanged: (_) async {},
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            side: const BorderSide(width: 2.0),
+          ),
         ),
       ),
     );
   }
 
-  ListTile _getTodoTile(int index, Todo todo) {
+  Widget _getTodoTile(int index, Todo todo) {
     final isEditMode =
         _mode == ManagementModes.edit && _currentTodoIndex == index;
 
@@ -267,7 +282,7 @@ class _TodosTabState extends State<TodosTab> {
             ),
           if (todo.date != null)
             Text(
-              format(DateTime.parse(todo.date!)),
+              formatDateToTimeAgo(todo.date!),
               style: const TextStyle(
                 fontSize: 12.0,
               ),
@@ -319,28 +334,42 @@ class _TodosTabState extends State<TodosTab> {
       );
     }
 
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: child,
-      horizontalTitleGap: 4.0,
-      leading: Checkbox(
-        value: todo.completed,
-        onChanged: (value) async {
-          await _todosRepository.update(
-            todo.copyWith(
-              completed: value,
-              date: DateTime.now().toString(),
-            ),
-          );
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : Colors.black54,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.shade200,
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.only(bottom: 8.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: child,
+        horizontalTitleGap: 4.0,
+        leading: Checkbox(
+          value: todo.completed,
+          onChanged: (value) async {
+            await _todosRepository.update(
+              todo.copyWith(
+                completed: value,
+                date: DateTime.now().toString(),
+              ),
+            );
 
-          setState(() {
-            _mode = ManagementModes.view;
-          });
+            setState(() {
+              _mode = ManagementModes.view;
+            });
 
-          _todoController.clear();
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+            _todoController.clear();
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
         ),
       ),
     );
