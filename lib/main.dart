@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:badger/screens/home/home.dart';
-import 'package:badger/screens/notes/manage.dart';
+import 'package:badger/screens/home/home_screen.dart';
+import 'package:badger/screens/notes/manage_note_screen.dart';
 import 'package:badger/utils/constants.dart';
-import 'package:badger/utils/local_storage.dart';
+import 'package:badger/helpers/local_storage.dart';
 import 'package:badger/utils/themes.dart';
 
 void main() async {
@@ -25,10 +25,10 @@ class Main extends StatelessWidget {
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
       routes: {
-        homeRoute: (context) => const Home(),
-        manageNoteRoute: (context) => const ManageNote(),
+        HomeScreen.routePath: (context) => const HomeScreen(),
+        ManageNoteScreen.routePath: (context) => const ManageNoteScreen(),
       },
-      initialRoute: homeRoute,
+      initialRoute: HomeScreen.routePath,
     );
   }
 }

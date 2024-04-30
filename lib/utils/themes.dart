@@ -7,6 +7,7 @@ ThemeData theme = ThemeData.light().copyWith(
     contentTextStyle: const TextStyle(
       color: Colors.black,
     ),
+    elevation: 0,
   ),
 );
 
@@ -17,5 +18,6 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
     contentTextStyle: TextStyle(
       color: Colors.black,
     ),
+    elevation: 0,
   ),
 );

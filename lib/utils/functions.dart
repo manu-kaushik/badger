@@ -1,32 +1,6 @@
-import 'package:flutter/material.dart';
-import 'constants.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:badger/utils/enums.dart';
 import 'package:intl/intl.dart';
-
-Color colorFromString(String colorString) {
-  int colorValue = int.parse(colorString.substring(8, 16), radix: 16);
-
-  return Color(colorValue);
-}
-
-SnackBar getSnackBar(
-  String message, {
-  AlertTypes? type,
-  SnackBarAction? action,
-  Duration? duration,
-  double? elevation = 0,
-}) {
-  return SnackBar(
-    content: Text(
-      message,
-    ),
-    action: action,
-    duration: duration ?? const Duration(milliseconds: 4000),
-    elevation: elevation,
-  );
-}
-
-Size screenSize(context) => MediaQuery.of(context).size;
+import 'package:timeago/timeago.dart' as timeago;
 
 String textToMarkdown(style, text) {
   if (style == MarkdownStyles.bold) {
@@ -100,5 +74,13 @@ String formatDateToTimeAgo(String dateString) {
     }
   } catch (e) {
     return "";
+  }
+}
+
+String getTrimmedContent(String body, {int length = 48}) {
+  if (body.length > length) {
+    return '${body.substring(0, length)}...';
+  } else {
+    return body;
   }
 }

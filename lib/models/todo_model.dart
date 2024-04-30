@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-Todo todoFromJson(String str) => Todo.fromJson(json.decode(str));
+TodoModel todoFromJson(String str) => TodoModel.fromJson(json.decode(str));
 
-String todoToJson(Todo data) => json.encode(data.toJson());
+String todoToJson(TodoModel data) => json.encode(data.toJson());
 
-class Todo {
+class TodoModel {
   int id;
   String title;
   String? description;
@@ -12,7 +12,7 @@ class Todo {
   String? color;
   String? date;
 
-  Todo({
+  TodoModel({
     required this.id,
     required this.title,
     this.description,
@@ -21,7 +21,7 @@ class Todo {
     this.date,
   });
 
-  factory Todo.fromJson(Map<String, dynamic> json) => Todo(
+  factory TodoModel.fromJson(Map<String, dynamic> json) => TodoModel(
         id: json["id"],
         title: json["title"],
         description: json["description"],
@@ -39,14 +39,14 @@ class Todo {
         "date": date,
       };
 
-  Todo copyWith({
+  TodoModel copyWith({
     String? title,
     String? description,
     bool? completed,
     String? color,
     String? date,
   }) {
-    return Todo(
+    return TodoModel(
       id: id,
       title: title ?? this.title,
       description: description ?? this.description,

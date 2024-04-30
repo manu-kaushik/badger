@@ -1,23 +1,23 @@
 import 'dart:convert';
 
-Note noteFromJson(String str) => Note.fromJson(json.decode(str));
+NoteModel noteFromJson(String str) => NoteModel.fromJson(json.decode(str));
 
-String noteToJson(Note data) => json.encode(data.toJson());
+String noteToJson(NoteModel data) => json.encode(data.toJson());
 
-class Note {
+class NoteModel {
   int id;
   String title;
   String body;
   String? date;
 
-  Note({
+  NoteModel({
     required this.id,
     this.title = '',
     this.body = '',
     this.date,
   });
 
-  factory Note.fromJson(Map<String, dynamic> json) => Note(
+  factory NoteModel.fromJson(Map<String, dynamic> json) => NoteModel(
         id: json["id"],
         title: json["title"],
         body: json["body"],
@@ -31,12 +31,12 @@ class Note {
         "date": date,
       };
 
-  Note copyWith({
+  NoteModel copyWith({
     String? title,
     String? body,
     String? date,
   }) {
-    return Note(
+    return NoteModel(
       id: id,
       title: title ?? this.title,
       body: body ?? this.body,
