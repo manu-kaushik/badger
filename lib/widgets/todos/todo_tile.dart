@@ -1,64 +1,40 @@
-import 'package:badger/models/todo_model.dart';
-import 'package:badger/repositories/todos_repository.dart';
+import 'package:badger/providers/exports.dart';
 import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/enums.dart';
 import 'package:badger/utils/functions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TodoTile extends StatefulWidget {
-  final TodoModel todo;
-  final ManagementModes mode;
-  final int currentTodoIndex;
+class TodoTile extends ConsumerWidget {
   final int index;
-  final FocusNode todoFocusNode;
-  final TextEditingController todoController;
-  final TodosRepository todosRepository;
 
   const TodoTile({
     super.key,
-    required this.todo,
-    required this.mode,
-    required this.currentTodoIndex,
     required this.index,
-    required this.todoFocusNode,
-    required this.todoController,
-    required this.todosRepository,
   });
 
   @override
-  State<TodoTile> createState() => _TodoTileState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(todoModeProvider);
+    final todos = ref.watch(todosProvider);
+    final todosNotifier = ref.read(todosProvider.notifier);
+    final currentTodoIndex = ref.watch(currentTodoIndexProvider);
+    final todoController = ref.watch(todoInputControllerProvider);
+    final todoFocusNode = ref.watch(todoFocusNodeProvider);
 
-class _TodoTileState extends State<TodoTile> {
-  bool isEditMode = false;
+    final currentTodoIndexNotifier =
+        ref.watch(currentTodoIndexProvider.notifier);
 
-  late ManagementModes mode;
-  late int currentTodoIndex;
-  late int index;
-  late TodoModel todo;
-  late TodosRepository todosRepository;
+    final isEditMode =
+        mode == ManagementModes.edit && currentTodoIndex == index;
 
-  @override
-  void initState() {
-    super.initState();
+    final todo = todos[index];
 
-    mode = widget.mode;
-
-    currentTodoIndex = widget.currentTodoIndex;
-    index = widget.index;
-
-    todo = widget.todo;
-
-    todosRepository = widget.todosRepository;
-
-    isEditMode = mode == ManagementModes.edit && currentTodoIndex == index;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     if (isEditMode) {
-      widget.todoController.text = todo.title;
+      todoController.text = todo.title;
     }
+
+    bool isCompleted = todo.completed;
 
     return Container(
       decoration: BoxDecoration(
@@ -77,8 +53,8 @@ class _TodoTileState extends State<TodoTile> {
         contentPadding: EdgeInsets.zero,
         title: isEditMode
             ? TextField(
-                controller: widget.todoController,
-                focusNode: widget.todoFocusNode,
+                controller: todoController,
+                focusNode: todoFocusNode,
                 decoration: const InputDecoration(
                   hintText: 'Enter a todo',
                   border: InputBorder.none,
@@ -86,14 +62,14 @@ class _TodoTileState extends State<TodoTile> {
                 readOnly: mode == ManagementModes.view,
                 onSubmitted: (todoTitle) {
                   if (todoTitle.isNotEmpty) {
-                    todosRepository.update(
+                    todosNotifier.updateTodo(
                       todo.copyWith(
                         title: todoTitle,
                         date: DateTime.now().toString(),
                       ),
                     );
                   } else {
-                    todosRepository.delete(todo);
+                    todosNotifier.deleteTodo(todo);
 
                     SnackBar snackBar = const SnackBar(
                       content: Text('Empty todo deleted'),
@@ -102,28 +78,30 @@ class _TodoTileState extends State<TodoTile> {
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
 
-                  setState(() {
-                    mode = ManagementModes.view;
-                  });
+                  ref
+                      .read(todoModeProvider.notifier)
+                      .setMode(ManagementModes.view);
 
-                  widget.todoController.clear();
+                  todoController.clear();
                 },
                 onTapOutside: (_) {
                   if (mode != ManagementModes.view) {
-                    setState(() {
-                      mode = ManagementModes.view;
-                    });
+                    ref
+                        .read(todoModeProvider.notifier)
+                        .setMode(ManagementModes.view);
                   }
                 },
               )
             : GestureDetector(
                 onTap: () {
                   if (!todo.completed) {
-                    setState(() {
-                      mode = ManagementModes.edit;
-                      currentTodoIndex = index;
-                    });
-                    widget.todoFocusNode.requestFocus();
+                    ref
+                        .read(todoModeProvider.notifier)
+                        .setMode(ManagementModes.edit);
+
+                    currentTodoIndexNotifier.setCurrentTodoIndex(index);
+
+                    todoFocusNode.requestFocus();
                   }
                 },
                 child: Column(
@@ -152,20 +130,18 @@ class _TodoTileState extends State<TodoTile> {
               ),
         horizontalTitleGap: 4.0,
         leading: Checkbox(
-          value: todo.completed,
+          value: isCompleted,
           onChanged: (value) async {
-            await todosRepository.update(
+            todosNotifier.updateTodo(
               todo.copyWith(
                 completed: value,
                 date: DateTime.now().toString(),
               ),
             );
 
-            setState(() {
-              mode = ManagementModes.view;
-            });
+            ref.read(todoModeProvider.notifier).setMode(ManagementModes.view);
 
-            widget.todoController.clear();
+            todoController.clear();
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),

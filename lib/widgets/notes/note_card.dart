@@ -1,21 +1,25 @@
-import 'package:badger/models/note_model.dart';
+import 'package:badger/providers/notes/notes_provider.dart';
 import 'package:badger/screens/notes/manage_note_screen.dart';
 import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/enums.dart';
 import 'package:badger/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NoteCard extends StatelessWidget {
-  final NoteModel note;
+class NoteCard extends ConsumerWidget {
+  final int index;
 
   const NoteCard({
     super.key,
-    required this.note,
+    required this.index,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notes = ref.watch(notesProvider);
+    final note = notes[index];
+
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(

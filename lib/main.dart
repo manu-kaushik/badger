@@ -4,13 +4,14 @@ import 'package:badger/screens/notes/manage_note_screen.dart';
 import 'package:badger/utils/constants.dart';
 import 'package:badger/helpers/local_storage.dart';
 import 'package:badger/utils/themes.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await LocalStorage().initialize();
 
-  runApp(const Main());
+  runApp(const ProviderScope(child: Main()));
 }
 
 class Main extends StatelessWidget {

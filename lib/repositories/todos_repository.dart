@@ -63,7 +63,7 @@ class TodosRepository {
     );
   }
 
-  Future<List<TodoModel>> getAll({Orders order = Orders.desc}) async {
+  Future<List<TodoModel>> getAll({Orders order = Orders.asc}) async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query(tableName);

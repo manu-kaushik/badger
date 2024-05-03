@@ -1,4 +1,5 @@
 import 'package:badger/models/note_model.dart';
+import 'package:badger/providers/notes/notes_provider.dart';
 import 'package:badger/repositories/notes_repository.dart';
 import 'package:badger/utils/enums.dart';
 import 'package:badger/widgets/notes/formatting_options_bar.dart';
@@ -6,19 +7,18 @@ import 'package:badger/widgets/notes/note_title_input.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ManageNoteScreen extends StatefulWidget {
+class ManageNoteScreen extends ConsumerStatefulWidget {
   static const String routePath = '/manage_note';
 
   const ManageNoteScreen({super.key});
 
   @override
-  State<ManageNoteScreen> createState() => _ManageNoteScreenState();
+  ConsumerState<ManageNoteScreen> createState() => _ManageNoteScreenState();
 }
 
-class _ManageNoteScreenState extends State<ManageNoteScreen> {
-  final notesRepository = NotesRepository();
-
+class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
   ManagementModes mode = ManagementModes.view;
 
   late NoteModel note;
@@ -213,6 +213,8 @@ class _ManageNoteScreenState extends State<ManageNoteScreen> {
   }
 
   void showDeleteNoteConfirmation(BuildContext context) {
+    final notesNotifier = ref.read(notesProvider.notifier);
+
     SnackBar snackBar = SnackBar(
       content: const Text(
         'Are you sure you want to delete this note?',
@@ -220,7 +222,9 @@ class _ManageNoteScreenState extends State<ManageNoteScreen> {
       action: SnackBarAction(
           label: 'Delete',
           onPressed: () {
-            notesRepository.delete(note).then((_) => Navigator.pop(context));
+            notesNotifier.deleteNote(note);
+
+            Navigator.pop(context);
           }),
       duration: const Duration(seconds: 5),
     );
@@ -278,6 +282,9 @@ class _ManageNoteScreenState extends State<ManageNoteScreen> {
   }
 
   Future<bool> saveNote(BuildContext context) async {
+    final notesRepository = NotesRepository();
+    final notesNotifier = ref.read(notesProvider.notifier);
+
     int id = await notesRepository.getLastInsertedId() + 1;
 
     String title = titleController.text.trim();
@@ -301,21 +308,23 @@ class _ManageNoteScreenState extends State<ManageNoteScreen> {
 
       return true;
     } else {
-      await notesRepository.insert(note);
+      notesNotifier.addNote(note);
 
       return false;
     }
   }
 
-  Future<bool> updateNote(BuildContext context) async {
+  bool updateNote(BuildContext context) {
     String title = titleController.text.trim();
     String body = bodyController.text.trim();
+
+    final notesNotifier = ref.read(notesProvider.notifier);
 
     note.title = title;
     note.body = body;
 
     if (title == '' && body == '') {
-      notesRepository.delete(note);
+      notesNotifier.deleteNote(note);
 
       SnackBar snackBar = const SnackBar(
         content: Text('Note deleted'),
@@ -327,7 +336,7 @@ class _ManageNoteScreenState extends State<ManageNoteScreen> {
 
       return true;
     } else {
-      await notesRepository.update(
+      notesNotifier.updateNote(
         note.copyWith(
           title: title,
           body: body,

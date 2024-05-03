@@ -1,37 +1,23 @@
-import 'package:badger/repositories/todos_repository.dart';
+import 'package:badger/providers/exports.dart';
 import 'package:badger/utils/enums.dart';
 import 'package:badger/widgets/todos/todos_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TodosTab extends StatefulWidget {
+class TodosTab extends ConsumerStatefulWidget {
   const TodosTab({super.key});
 
   @override
-  State<TodosTab> createState() => _TodosTabState();
+  ConsumerState<TodosTab> createState() => _TodosTabState();
 }
 
-class _TodosTabState extends State<TodosTab> {
-  final todosRepository = TodosRepository();
-
-  late ManagementModes mode;
-
-  final TextEditingController todoController = TextEditingController();
-
-  final FocusNode todoFocusNode = FocusNode();
-
-  int currentTodoIndex = -1;
-
-  @override
-  void initState() {
-    super.initState();
-
-    mode = ManagementModes.view;
-  }
+class _TodosTabState extends ConsumerState<TodosTab> {
+  late TextEditingController todoController;
+  late FocusNode todoFocusNode;
 
   @override
   void dispose() {
     todoController.dispose();
-
     todoFocusNode.dispose();
 
     super.dispose();
@@ -39,15 +25,17 @@ class _TodosTabState extends State<TodosTab> {
 
   @override
   Widget build(BuildContext context) {
+    todoController = ref.watch(todoInputControllerProvider);
+    todoFocusNode = ref.watch(todoFocusNodeProvider);
+    final mode = ref.watch(todoModeProvider);
+
     return PopScope(
       onPopInvoked: (didPop) {
         if (didPop) {
           ScaffoldMessenger.of(context).clearSnackBars();
 
           if (mode == ManagementModes.add) {
-            setState(() {
-              mode = ManagementModes.view;
-            });
+            ref.read(todoModeProvider.notifier).setMode(ManagementModes.view);
           }
         }
       },
@@ -72,7 +60,7 @@ class _TodosTabState extends State<TodosTab> {
                   PopupMenuButton<String>(
                     offset: const Offset(0, kToolbarHeight + 8),
                     icon: const Icon(
-                      Icons.more_vert, // Set the desired color here
+                      Icons.more_vert,
                     ),
                     elevation: 4,
                     itemBuilder: (context) => [
@@ -83,22 +71,13 @@ class _TodosTabState extends State<TodosTab> {
                     ],
                     onSelected: (value) {
                       if (value == 'clearCompleted') {
-                        todosRepository.deleteCompletedTodos();
-
-                        setState(() {});
+                        ref.read(todosProvider.notifier).deleteCompletedTodos();
                       }
                     },
                   ),
                 ],
               ),
-              TodosList(
-                mode: mode,
-                currentTodoIndex: currentTodoIndex,
-                todoFocusNode: todoFocusNode,
-                todoController: todoController,
-                todosRepository: todosRepository,
-                setMode: setMode,
-              ),
+              const TodosList(),
             ],
           ),
         ),
@@ -107,20 +86,12 @@ class _TodosTabState extends State<TodosTab> {
           child: FloatingActionButton(
             heroTag: 'addTodoBtn',
             onPressed: () {
-              setState(() {
-                mode = ManagementModes.add;
-              });
+              ref.read(todoModeProvider.notifier).setMode(ManagementModes.add);
             },
             child: const Icon(Icons.add),
           ),
         ),
       ),
     );
-  }
-
-  void setMode(ManagementModes value) {
-    setState(() {
-      mode = value;
-    });
   }
 }

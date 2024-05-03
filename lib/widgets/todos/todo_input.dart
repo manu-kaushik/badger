@@ -1,41 +1,26 @@
 import 'package:badger/models/todo_model.dart';
+import 'package:badger/providers/exports.dart';
 import 'package:badger/repositories/todos_repository.dart';
 import 'package:badger/utils/colors.dart';
 import 'package:badger/utils/enums.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TodoInput extends StatefulWidget {
+class TodoInput extends ConsumerWidget {
   final bool isEditMode;
-  final FocusNode todoFocusNode;
-  final TextEditingController todoController;
-  final TodosRepository todosRepository;
-  final Function(ManagementModes) setMode;
 
   const TodoInput({
     super.key,
     required this.isEditMode,
-    required this.todoFocusNode,
-    required this.todoController,
-    required this.todosRepository,
-    required this.setMode,
   });
 
   @override
-  State<TodoInput> createState() => _TodoInputState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todosNotifier = ref.read(todosProvider.notifier);
+    final todosRepository = TodosRepository();
+    final todoController = ref.watch(todoInputControllerProvider);
+    final todoFocusNode = ref.watch(todoFocusNodeProvider);
 
-class _TodoInputState extends State<TodoInput> {
-  late TodosRepository todosRepository;
-
-  @override
-  void initState() {
-    super.initState();
-
-    todosRepository = widget.todosRepository;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light
@@ -52,13 +37,13 @@ class _TodoInputState extends State<TodoInput> {
       child: ListTile(
         contentPadding: EdgeInsets.zero,
         title: TextField(
-          controller: widget.todoController,
-          focusNode: widget.todoFocusNode,
+          controller: todoController,
+          focusNode: todoFocusNode,
           decoration: const InputDecoration(
             hintText: 'Enter a todo',
             border: InputBorder.none,
           ),
-          readOnly: widget.isEditMode,
+          readOnly: isEditMode,
           onSubmitted: (todoTitle) async {
             if (todoTitle.isNotEmpty) {
               final todo = TodoModel(
@@ -67,7 +52,7 @@ class _TodoInputState extends State<TodoInput> {
                 date: DateTime.now().toString(),
               );
 
-              todosRepository.insert(todo);
+              todosNotifier.addTodo(todo);
             } else {
               SnackBar snackBar = const SnackBar(
                 content: Text('Empty todo discarded'),
@@ -76,11 +61,9 @@ class _TodoInputState extends State<TodoInput> {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
 
-            setState(() {
-              widget.setMode(ManagementModes.view);
-            });
+            ref.read(todoModeProvider.notifier).setMode(ManagementModes.view);
 
-            widget.todoController.clear();
+            todoController.clear();
           },
         ),
         leading: Checkbox(

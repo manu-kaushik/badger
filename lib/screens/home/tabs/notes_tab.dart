@@ -3,14 +3,9 @@ import 'package:badger/utils/enums.dart';
 import 'package:badger/widgets/notes/notes_list.dart';
 import 'package:flutter/material.dart';
 
-class NotesTab extends StatefulWidget {
+class NotesTab extends StatelessWidget {
   const NotesTab({super.key});
 
-  @override
-  State<NotesTab> createState() => _NotesTabState();
-}
-
-class _NotesTabState extends State<NotesTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +39,7 @@ class _NotesTabState extends State<NotesTab> {
             arguments: {
               'mode': ManagementModes.add,
             },
-          ).then((_) => setState(() {}));
+          );
         },
         child: const Icon(Icons.add),
       ),
