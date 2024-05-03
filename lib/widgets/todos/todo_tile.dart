@@ -39,14 +39,9 @@ class TodoTile extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light
-            ? Colors.white
-            : Colors.black54,
+            ? primaryColor.shade50
+            : Colors.black38,
         borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.shade200,
-          ),
-        ],
       ),
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ListTile(
@@ -114,17 +109,12 @@ class TodoTile extends ConsumerWidget {
                             todo.completed ? TextDecoration.lineThrough : null,
                       ),
                     ),
-                    if (todo.date != null)
-                      const SizedBox(
-                        height: 4.0,
-                      ),
+                    if (todo.date != null) const SizedBox(height: 4.0),
                     if (todo.date != null)
                       Text(
                         formatDateToTimeAgo(todo.date!),
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                        ),
-                      )
+                        style: const TextStyle(fontSize: 10.0),
+                      ),
                   ],
                 ),
               ),

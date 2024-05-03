@@ -24,14 +24,9 @@ class TodoInput extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light
-            ? Colors.white
-            : Colors.black54,
+            ? primaryColor.shade50
+            : Colors.black38,
         borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.shade200,
-          ),
-        ],
       ),
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ListTile(

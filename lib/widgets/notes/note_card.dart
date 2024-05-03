@@ -34,14 +34,9 @@ class NoteCard extends ConsumerWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black54,
+              ? primaryColor.shade50
+              : Colors.black38,
           borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: primaryColor.shade200,
-            ),
-          ],
         ),
         margin: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 12.0),
         child: Padding(
@@ -59,9 +54,16 @@ class NoteCard extends ConsumerWidget {
                 MarkdownBody(
                   data: getTrimmedContent(note.body),
                 ),
+              if (note.date != null) const SizedBox(height: 8.0),
               if (note.date != null)
-                Text(
-                  formatDateToTimeAgo(note.date!),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      formatDateToTimeAgo(note.date!),
+                      style: const TextStyle(fontSize: 10.0),
+                    ),
+                  ],
                 ),
             ],
           ),

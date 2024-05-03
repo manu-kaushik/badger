@@ -91,7 +91,7 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
                 icon: const Icon(
                   Icons.more_vert,
                 ),
-                elevation: 0,
+                elevation: 2,
                 itemBuilder: (context) => [
                   const PopupMenuItem(
                     value: 'copyNoteBody',

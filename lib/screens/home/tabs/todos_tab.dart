@@ -62,7 +62,7 @@ class _TodosTabState extends ConsumerState<TodosTab> {
                     icon: const Icon(
                       Icons.more_vert,
                     ),
-                    elevation: 4,
+                    elevation: 2,
                     itemBuilder: (context) => [
                       const PopupMenuItem(
                         value: 'clearCompleted',
