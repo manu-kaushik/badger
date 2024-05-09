@@ -182,23 +182,7 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
                         child: MarkdownBody(
                           data: note.body,
                           fitContent: false,
-                          styleSheet: MarkdownStyleSheet(
-                            blockSpacing: 12.0,
-                            code: const TextStyle(
-                              fontFamily: 'SourceCodePro',
-                              fontWeight: FontWeight.w500,
-                            ),
-                            codeblockDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            codeblockPadding: const EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 16.0),
-                            blockquoteDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            blockquotePadding: const EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 16.0),
-                          ),
+                          styleSheet: getMarkdownStyleSheet(context),
                         ),
                       ),
                     ),

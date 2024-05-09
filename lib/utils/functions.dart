@@ -1,4 +1,6 @@
 import 'package:badger/utils/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -77,10 +79,74 @@ String formatDateToTimeAgo(String dateString) {
   }
 }
 
-String getTrimmedContent(String body, {int length = 48}) {
+String getTrimmedContent(
+  String body, {
+  int length = 48,
+  TrimTypes type = TrimTypes.line,
+}) {
+  if (type == TrimTypes.line) {
+    return body.split('\n').first;
+  }
+
   if (body.length > length) {
     return '${body.substring(0, length)}...';
-  } else {
-    return body;
   }
+
+  return body;
+}
+
+MarkdownStyleSheet getMarkdownStyleSheet(BuildContext context) {
+  return MarkdownStyleSheet(
+    blockSpacing: 16.0,
+    code: TextStyle(
+      fontFamily: 'SourceCodePro',
+      fontWeight: FontWeight.w500,
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey.shade300
+          : Colors.grey.shade800,
+    ),
+    codeblockDecoration: BoxDecoration(
+      color: Theme.of(context).brightness == Brightness.light
+          ? Colors.grey.shade300
+          : Colors.grey.shade800,
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    codeblockPadding: const EdgeInsets.symmetric(
+      vertical: 12.0,
+      horizontal: 16.0,
+    ),
+    blockquoteDecoration: BoxDecoration(
+      color: Theme.of(context).brightness == Brightness.light
+          ? primaryColor.shade50
+          : primaryColor.shade900,
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(4.0),
+        topRight: Radius.circular(8.0),
+        bottomLeft: Radius.circular(4.0),
+        bottomRight: Radius.circular(8.0),
+      ),
+      border: Border(
+        left: BorderSide(
+          color: Theme.of(context).brightness == Brightness.light
+              ? primaryColor.shade200
+              : primaryColor.shade400,
+          width: 8.0,
+        ),
+      ),
+    ),
+    blockquotePadding: const EdgeInsets.symmetric(
+      vertical: 12.0,
+      horizontal: 16.0,
+    ),
+    horizontalRuleDecoration: BoxDecoration(
+      border: Border(
+        bottom: BorderSide(
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.grey.shade400
+              : Colors.grey.shade700,
+        ),
+      ),
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+  );
 }

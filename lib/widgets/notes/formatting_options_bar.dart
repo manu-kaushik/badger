@@ -29,7 +29,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -40,7 +40,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.format_bold_rounded,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -52,7 +52,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -63,7 +63,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.format_italic_rounded,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -75,7 +75,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -86,7 +86,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.format_strikethrough_rounded,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -98,7 +98,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -109,7 +109,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.format_quote_rounded,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -121,7 +121,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -143,7 +143,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -154,7 +154,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.code_rounded,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -166,7 +166,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -185,8 +185,8 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                           width: 2.0,
                           color:
                               Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black54
-                                  : Colors.grey.shade300,
+                                  ? primaryColor
+                                  : primaryColor.shade100,
                         ),
                         borderRadius: BorderRadius.circular(4.0),
                       ),
@@ -210,7 +210,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -221,7 +221,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.format_list_bulleted_rounded,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -233,7 +233,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -244,7 +244,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.format_list_numbered_outlined,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -256,7 +256,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -267,7 +267,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.checklist_rounded,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -279,7 +279,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey.shade300
+                    ? primaryColor.shade100
                     : Colors.black54,
                 borderRadius: BorderRadius.circular(4.0),
               ),
@@ -290,7 +290,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                 Icons.image,
                 size: 24.0,
                 color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black54
+                    ? primaryColor
                     : Colors.white,
               ),
             ),
@@ -304,16 +304,7 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
     String originalText = widget.bodyController.text;
     TextSelection selection = widget.bodyController.selection;
 
-    final selectionIndependentStyles = [
-      MarkdownStyles.inlineCode,
-      MarkdownStyles.code,
-      MarkdownStyles.blockQuote,
-      MarkdownStyles.divider,
-      MarkdownStyles.image,
-    ];
-
-    if (selection.textInside(originalText).isNotEmpty ||
-        selectionIndependentStyles.contains(style)) {
+    if (selection.textInside(originalText).isNotEmpty) {
       String selectedText = selection.textInside(originalText);
 
       int start = selection.start;

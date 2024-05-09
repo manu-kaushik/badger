@@ -17,3 +17,5 @@ enum MarkdownStyles {
   checkList,
   image
 }
+
+enum TrimTypes { line, character }

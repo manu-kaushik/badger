@@ -51,6 +51,8 @@ class NoteCard extends ConsumerWidget {
               if (note.body.isNotEmpty)
                 MarkdownBody(
                   data: getTrimmedContent(note.body),
+                  fitContent: false,
+                  styleSheet: getMarkdownStyleSheet(context),
                 ),
               if (note.date != null) const SizedBox(height: 8.0),
               if (note.date != null)
