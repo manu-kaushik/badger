@@ -34,7 +34,7 @@ class TodoTile extends ConsumerWidget {
       todoController.text = todo.title;
     }
 
-    bool isCompleted = todo.completed;
+    bool isCompleted = todo.isComplete;
 
     return Container(
       decoration: BoxDecoration(
@@ -89,7 +89,7 @@ class TodoTile extends ConsumerWidget {
               )
             : GestureDetector(
                 onTap: () {
-                  if (!todo.completed) {
+                  if (!todo.isComplete) {
                     ref
                         .read(todoModeProvider.notifier)
                         .setMode(ManagementModes.edit);
@@ -106,7 +106,7 @@ class TodoTile extends ConsumerWidget {
                       todo.title,
                       style: TextStyle(
                         decoration:
-                            todo.completed ? TextDecoration.lineThrough : null,
+                            todo.isComplete ? TextDecoration.lineThrough : null,
                       ),
                     ),
                     if (todo.date != null) const SizedBox(height: 4.0),
@@ -124,7 +124,7 @@ class TodoTile extends ConsumerWidget {
           onChanged: (value) async {
             todosNotifier.updateTodo(
               todo.copyWith(
-                completed: value,
+                isComplete: value,
                 date: DateTime.now().toString(),
               ),
             );

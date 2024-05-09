@@ -41,7 +41,7 @@ class TodosNotifier extends Notifier<List<TodoModel>> {
   }
 
   void deleteCompletedTodos() async {
-    state = state.where((element) => !element.completed).toList();
+    state = state.where((element) => !element.isComplete).toList();
 
     await _repository.deleteCompletedTodos();
   }
