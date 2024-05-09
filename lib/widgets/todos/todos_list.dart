@@ -23,39 +23,37 @@ class TodosList extends ConsumerWidget {
         const SizedBox(
           height: 16.0,
         ),
-        todos.isEmpty
-            ? const EmptyStateView(
-                icon: Icons.view_list_rounded,
-                text: 'No todos yet! Try adding one!',
-              )
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 16.0),
-                itemCount: todos.isEmpty
-                    ? 1
-                    : (mode == ManagementModes.add
-                        ? todos.length + 1
-                        : todos.length),
-                itemBuilder: (context, index) {
-                  final isEditMode =
-                      mode == ManagementModes.edit && currentTodoIndex == index;
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 16.0),
+          itemCount: todos.isEmpty
+              ? 1
+              : (mode == ManagementModes.add ? todos.length + 1 : todos.length),
+          itemBuilder: (context, index) {
+            final isEditMode =
+                mode == ManagementModes.edit && currentTodoIndex == index;
 
-                  if (todos.isEmpty && index == 0) {
-                    if (mode == ManagementModes.add) {
-                      todoFocusNode.requestFocus();
+            if (todos.isEmpty && index == 0) {
+              if (mode == ManagementModes.add) {
+                todoFocusNode.requestFocus();
 
-                      return TodoInput(isEditMode: isEditMode);
-                    }
-                  } else if (index == todos.length) {
-                    todoFocusNode.requestFocus();
+                return TodoInput(isEditMode: isEditMode);
+              } else {
+                return const EmptyStateView(
+                  icon: Icons.view_list_rounded,
+                  text: 'No todos yet! Try adding one!',
+                );
+              }
+            } else if (index == todos.length) {
+              todoFocusNode.requestFocus();
 
-                    return TodoInput(isEditMode: isEditMode);
-                  }
+              return TodoInput(isEditMode: isEditMode);
+            }
 
-                  return TodoTile(index: index);
-                },
-              ),
+            return TodoTile(index: index);
+          },
+        ),
       ],
     );
   }

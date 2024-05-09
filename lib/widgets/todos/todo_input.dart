@@ -69,6 +69,12 @@ class TodoInput extends ConsumerWidget {
             side: const BorderSide(width: 2.0),
           ),
         ),
+        trailing: IconButton(
+          icon: const Icon(Icons.close_rounded),
+          onPressed: () {
+            ref.read(todoModeProvider.notifier).setMode(ManagementModes.view);
+          },
+        ),
       ),
     );
   }

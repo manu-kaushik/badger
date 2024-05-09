@@ -29,67 +29,56 @@ class _TodosTabState extends ConsumerState<TodosTab> {
     todoFocusNode = ref.watch(todoFocusNodeProvider);
     final mode = ref.watch(todoModeProvider);
 
-    return PopScope(
-      onPopInvoked: (didPop) {
-        if (didPop) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-
-          if (mode == ManagementModes.add) {
-            ref.read(todoModeProvider.notifier).setMode(ManagementModes.view);
-          }
-        }
-      },
-      child: Scaffold(
-        body: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                pinned: true,
-                expandedHeight: 144.0,
-                surfaceTintColor: Colors.transparent,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    'Todos',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  titlePadding: const EdgeInsets.only(bottom: 16.0),
-                  expandedTitleScale: 2.0,
+    return Scaffold(
+      body: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              expandedHeight: 144.0,
+              surfaceTintColor: Colors.transparent,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(
+                  'Todos',
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                actions: [
-                  PopupMenuButton<String>(
-                    offset: const Offset(0, kToolbarHeight + 8),
-                    icon: const Icon(
-                      Icons.more_vert,
-                    ),
-                    elevation: 2,
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'clearCompleted',
-                        child: Text('Clear Completed'),
-                      ),
-                    ],
-                    onSelected: (value) {
-                      if (value == 'clearCompleted') {
-                        ref.read(todosProvider.notifier).deleteCompletedTodos();
-                      }
-                    },
-                  ),
-                ],
+                titlePadding: const EdgeInsets.only(bottom: 16.0),
+                expandedTitleScale: 2.0,
               ),
-              const TodosList(),
-            ],
-          ),
+              actions: [
+                PopupMenuButton<String>(
+                  offset: const Offset(0, kToolbarHeight + 8),
+                  icon: const Icon(
+                    Icons.more_vert,
+                  ),
+                  elevation: 2,
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'clearCompleted',
+                      child: Text('Clear Completed'),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    if (value == 'clearCompleted') {
+                      ref.read(todosProvider.notifier).deleteCompletedTodos();
+                    }
+                  },
+                ),
+              ],
+            ),
+            const TodosList(),
+          ],
         ),
-        floatingActionButton: Visibility(
-          visible: mode == ManagementModes.view,
-          child: FloatingActionButton(
-            heroTag: 'addTodoBtn',
-            onPressed: () {
-              ref.read(todoModeProvider.notifier).setMode(ManagementModes.add);
-            },
-            child: const Icon(Icons.add),
-          ),
+      ),
+      floatingActionButton: Visibility(
+        visible: mode == ManagementModes.view,
+        child: FloatingActionButton(
+          heroTag: 'addTodoBtn',
+          onPressed: () {
+            ref.read(todoModeProvider.notifier).setMode(ManagementModes.add);
+          },
+          child: const Icon(Icons.add),
         ),
       ),
     );
