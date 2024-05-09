@@ -1,9 +1,8 @@
-import 'package:badger/models/note_model.dart';
-import 'package:badger/providers/notes/notes_provider.dart';
-import 'package:badger/repositories/notes_repository.dart';
-import 'package:badger/utils/enums.dart';
-import 'package:badger/widgets/notes/formatting_options_bar.dart';
-import 'package:badger/widgets/notes/note_title_input.dart';
+import 'package:badger/models/exports.dart';
+import 'package:badger/providers/exports.dart';
+import 'package:badger/repositories/exports.dart';
+import 'package:badger/utils/exports.dart';
+import 'package:badger/widgets/exports.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';

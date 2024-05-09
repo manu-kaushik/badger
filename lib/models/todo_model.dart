@@ -1,9 +1,3 @@
-import 'dart:convert';
-
-TodoModel todoFromJson(String str) => TodoModel.fromJson(json.decode(str));
-
-String todoToJson(TodoModel data) => json.encode(data.toJson());
-
 class TodoModel {
   int id;
   String title;

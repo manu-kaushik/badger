@@ -1,4 +1,4 @@
-import 'package:badger/utils/enums.dart';
+import 'package:badger/utils/exports.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

@@ -1,9 +1,3 @@
-import 'dart:convert';
-
-NoteModel noteFromJson(String str) => NoteModel.fromJson(json.decode(str));
-
-String noteToJson(NoteModel data) => json.encode(data.toJson());
-
 class NoteModel {
   int id;
   String title;

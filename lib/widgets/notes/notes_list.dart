@@ -1,6 +1,5 @@
-import 'package:badger/providers/notes/notes_provider.dart';
-import 'package:badger/widgets/common/empty_state_view.dart';
-import 'package:badger/widgets/notes/note_card.dart';
+import 'package:badger/providers/exports.dart';
+import 'package:badger/widgets/exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

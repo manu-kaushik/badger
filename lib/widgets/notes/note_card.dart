@@ -1,8 +1,6 @@
-import 'package:badger/providers/notes/notes_provider.dart';
-import 'package:badger/screens/notes/manage_note_screen.dart';
-import 'package:badger/utils/colors.dart';
-import 'package:badger/utils/enums.dart';
-import 'package:badger/utils/functions.dart';
+import 'package:badger/providers/exports.dart';
+import 'package:badger/screens/exports.dart';
+import 'package:badger/utils/exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

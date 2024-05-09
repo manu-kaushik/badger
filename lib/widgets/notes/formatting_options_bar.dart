@@ -1,5 +1,4 @@
-import 'package:badger/utils/enums.dart';
-import 'package:badger/utils/functions.dart';
+import 'package:badger/utils/exports.dart';
 import 'package:flutter/material.dart';
 
 class FormattingOptionsBar extends StatefulWidget {

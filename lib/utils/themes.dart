@@ -1,4 +1,4 @@
-import 'package:badger/utils/colors.dart';
+import 'package:badger/utils/exports.dart';
 import 'package:flutter/material.dart';
 
 ThemeData theme = ThemeData.light().copyWith(
@@ -9,16 +9,18 @@ ThemeData theme = ThemeData.light().copyWith(
       color: Colors.black,
     ),
     elevation: 0,
+    actionTextColor: primaryColor,
   ),
 );
 
 ThemeData darkTheme = ThemeData.dark().copyWith(
   textTheme: Typography().white.apply(fontFamily: 'Inter'),
-  snackBarTheme: const SnackBarThemeData(
+  snackBarTheme: SnackBarThemeData(
     backgroundColor: Colors.black,
-    contentTextStyle: TextStyle(
+    contentTextStyle: const TextStyle(
       color: Colors.white,
     ),
     elevation: 0,
+    actionTextColor: primaryColor,
   ),
 );

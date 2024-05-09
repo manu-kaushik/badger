@@ -1,5 +1,4 @@
-import 'package:badger/screens/home/tabs/notes_tab.dart';
-import 'package:badger/screens/home/tabs/todos_tab.dart';
+import 'package:badger/screens/exports.dart';
 import 'package:badger/helpers/local_storage.dart';
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,5 @@
-import 'package:badger/models/todo_model.dart';
-import 'package:badger/repositories/todos_repository.dart';
+import 'package:badger/models/exports.dart';
+import 'package:badger/repositories/exports.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TodosNotifier extends Notifier<List<TodoModel>> {

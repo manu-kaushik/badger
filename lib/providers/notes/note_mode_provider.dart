@@ -1,7 +1,7 @@
 import 'package:badger/utils/exports.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TodoModeNotifier extends Notifier<ManagementModes> {
+class NoteModeNotifier extends Notifier<ManagementModes> {
   @override
   ManagementModes build() {
     return ManagementModes.view;
@@ -12,7 +12,7 @@ class TodoModeNotifier extends Notifier<ManagementModes> {
   }
 }
 
-final todoModeProvider =
-    NotifierProvider<TodoModeNotifier, ManagementModes>(() {
-  return TodoModeNotifier();
+final noteModeProvider =
+    NotifierProvider<NoteModeNotifier, ManagementModes>(() {
+  return NoteModeNotifier();
 });

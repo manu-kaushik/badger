@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:badger/screens/home/home_screen.dart';
-import 'package:badger/screens/notes/manage_note_screen.dart';
-import 'package:badger/utils/constants.dart';
 import 'package:badger/helpers/local_storage.dart';
-import 'package:badger/utils/themes.dart';
+import 'package:badger/screens/exports.dart';
+import 'package:badger/utils/exports.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {

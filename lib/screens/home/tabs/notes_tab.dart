@@ -1,6 +1,6 @@
-import 'package:badger/screens/notes/manage_note_screen.dart';
-import 'package:badger/utils/enums.dart';
-import 'package:badger/widgets/notes/notes_list.dart';
+import 'package:badger/screens/exports.dart';
+import 'package:badger/utils/exports.dart';
+import 'package:badger/widgets/exports.dart';
 import 'package:flutter/material.dart';
 
 class NotesTab extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:badger/models/note_model.dart';
-import 'package:badger/repositories/notes_repository.dart';
+import 'package:badger/models/exports.dart';
+import 'package:badger/repositories/exports.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NotesNotifier extends Notifier<List<NoteModel>> {
