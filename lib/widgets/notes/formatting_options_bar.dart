@@ -186,16 +186,19 @@ class _FormattingOptionsBarState extends State<FormattingOptionsBar> {
                           color:
                               Theme.of(context).brightness == Brightness.light
                                   ? primaryColor
-                                  : primaryColor.shade100,
+                                  : Colors.white,
                         ),
                         borderRadius: BorderRadius.circular(4.0),
                       ),
                     ),
                     Container(
                       alignment: Alignment.bottomCenter,
-                      child: const Icon(
+                      child: Icon(
                         Icons.code_rounded,
                         size: 16.0,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? primaryColor
+                            : Colors.white,
                       ),
                     ),
                   ],

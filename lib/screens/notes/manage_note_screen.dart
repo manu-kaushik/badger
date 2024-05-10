@@ -124,29 +124,44 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
                   if (mode == ManagementModes.edit) {
                     updateNote(context);
                   }
-
-                  Navigator.pop(context);
                 },
               ),
           ],
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            NoteTitleInput(
-              titleController: titleController,
-              titleFocusNode: titleFocusNode,
-              bodyFocusNode: bodyFocusNode,
-              onTap: () {
-                setState(() {
-                  if (mode == ManagementModes.view) {
-                    mode = ManagementModes.edit;
-                  }
-                });
-              },
-            ),
-            mode != ManagementModes.view
-                ? Flexible(
+        body: mode == ManagementModes.view
+            ? SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    getTitleInput(),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (mode == ManagementModes.view) {
+                            mode = ManagementModes.edit;
+                          }
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16.0,
+                          horizontal: 24.0,
+                        ),
+                        child: MarkdownBody(
+                          data: note.body,
+                          fitContent: false,
+                          styleSheet: getMarkdownStyleSheet(context),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  getTitleInput(),
+                  Flexible(
                     child: Padding(
                       padding:
                           const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 48.0),
@@ -163,35 +178,26 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
                         cursorOpacityAnimates: false,
                       ),
                     ),
-                  )
-                : GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (mode == ManagementModes.view) {
-                          mode = ManagementModes.edit;
-                        }
-                      });
-                    },
-                    child: SingleChildScrollView(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16.0,
-                          horizontal: 24.0,
-                        ),
-                        height: MediaQuery.of(context).size.height * 2 / 3,
-                        child: MarkdownBody(
-                          data: note.body,
-                          fitContent: false,
-                          styleSheet: getMarkdownStyleSheet(context),
-                        ),
-                      ),
-                    ),
                   ),
-            if (mode != ManagementModes.view)
-              FormattingOptionsBar(bodyController: bodyController),
-          ],
-        ),
+                  FormattingOptionsBar(bodyController: bodyController),
+                ],
+              ),
       ),
+    );
+  }
+
+  Widget getTitleInput() {
+    return NoteTitleInput(
+      titleController: titleController,
+      titleFocusNode: titleFocusNode,
+      bodyFocusNode: bodyFocusNode,
+      onTap: () {
+        setState(() {
+          if (mode == ManagementModes.view) {
+            mode = ManagementModes.edit;
+          }
+        });
+      },
     );
   }
 
@@ -264,7 +270,7 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
     initialNoteSetup = false;
   }
 
-  Future<bool> saveNote(BuildContext context) async {
+  Future<void> saveNote(BuildContext context) async {
     final notesRepository = NotesRepository();
     final notesNotifier = ref.read(notesProvider.notifier);
 
@@ -286,18 +292,20 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
       );
 
       if (context.mounted) {
+        Navigator.pop(context);
+
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
-
-      return true;
     } else {
       notesNotifier.addNote(note);
 
-      return false;
+      setState(() {
+        mode = ManagementModes.view;
+      });
     }
   }
 
-  bool updateNote(BuildContext context) {
+  void updateNote(BuildContext context) {
     String title = titleController.text.trim();
     String body = bodyController.text.trim();
 
@@ -317,7 +325,7 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
 
-      return true;
+      Navigator.pop(context);
     } else {
       notesNotifier.updateNote(
         note.copyWith(
@@ -327,7 +335,9 @@ class _ManageNoteScreenState extends ConsumerState<ManageNoteScreen> {
         ),
       );
 
-      return false;
+      setState(() {
+        mode = ManagementModes.view;
+      });
     }
   }
 }
